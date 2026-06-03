@@ -1,0 +1,35 @@
+import type { Category, TransactionType } from './category'
+import type { Transaction } from './transaction'
+
+export interface MonthlyReport {
+  year: number
+  month: number
+  totalIncome: number
+  totalExpense: number
+  balance: number
+  transactions: Transaction[]
+}
+
+export interface YearlyMonthData {
+  month: number
+  income: number
+  expense: number
+  balance: number
+}
+
+export interface YearlyReport {
+  year: number
+  months: YearlyMonthData[]
+}
+
+export interface CategoryReport {
+  category: Category
+  total: number
+  count: number
+}
+
+export interface ReportFilters {
+  type?: TransactionType
+  startDate?: string
+  endDate?: string
+}

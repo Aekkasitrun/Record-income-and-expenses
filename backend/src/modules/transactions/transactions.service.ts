@@ -66,7 +66,7 @@ export class TransactionsService {
           }
         : {};
 
-    const [incomeResult, expenseResult] = await Promise.all([
+    const [incomeResult, expenseResult, investmentResult] = await Promise.all([
       this.prisma.transaction.aggregate({
         where: { ...where, type: TransactionType.INCOME },
         _sum: { amount: true },
@@ -75,15 +75,21 @@ export class TransactionsService {
         where: { ...where, type: TransactionType.EXPENSE },
         _sum: { amount: true },
       }),
+      this.prisma.transaction.aggregate({
+        where: { ...where, type: TransactionType.INVESTMENT },
+        _sum: { amount: true },
+      }),
     ]);
 
     const totalIncome = Number(incomeResult._sum.amount ?? 0);
     const totalExpense = Number(expenseResult._sum.amount ?? 0);
+    const totalInvestment = Number(investmentResult._sum.amount ?? 0);
 
     return {
       totalIncome,
       totalExpense,
-      balance: totalIncome - totalExpense,
+      totalInvestment,
+      balance: totalIncome - totalExpense - totalInvestment,
     };
   }
 

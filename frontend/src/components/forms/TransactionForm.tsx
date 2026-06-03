@@ -14,6 +14,9 @@ import type { SubCategory } from '@/types/category'
 import { ICON_MAP } from '@/utils/iconMap'
 import dayjs from 'dayjs'
 
+const LAST_DATE_KEY = 'lastTransactionDate'
+const getInitialDate = () => localStorage.getItem(LAST_DATE_KEY) ?? dayjs().format('YYYY-MM-DD')
+
 interface TransactionFormProps {
   open: boolean
   onClose: () => void
@@ -31,7 +34,7 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
     defaultValues: {
       amount: undefined,
       type: 'EXPENSE',
-      date: dayjs().format('YYYY-MM-DD'),
+      date: getInitialDate(),
       categoryId: undefined,
       subCategoryId: undefined,
       description: '',
@@ -59,7 +62,7 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
         : {
             amount: undefined,
             type: 'EXPENSE',
-            date: dayjs().format('YYYY-MM-DD'),
+            date: getInitialDate(),
             categoryId: undefined,
             subCategoryId: undefined,
             description: '',
@@ -84,6 +87,7 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
   const filteredCategories = categories.filter((c) => c.type === selectedType)
 
   const handleFormSubmit = async (data: TransactionFormData) => {
+    localStorage.setItem(LAST_DATE_KEY, data.date)
     await onSubmit({
       ...data,
       date: new Date(data.date).toISOString(),
@@ -105,6 +109,7 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
                 <Select {...field} label={t('forms.type')}>
                   <MenuItem value="INCOME">{t('forms.income')}</MenuItem>
                   <MenuItem value="EXPENSE">{t('forms.expense')}</MenuItem>
+                  <MenuItem value="INVESTMENT">{t('forms.investment')}</MenuItem>
                 </Select>
                 {errors.type && <FormHelperText>{errors.type.message}</FormHelperText>}
               </FormControl>

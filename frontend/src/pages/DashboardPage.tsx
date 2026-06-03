@@ -3,6 +3,7 @@ import { Grid, Typography, Box, Card, CardContent, Divider, CircularProgress } f
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import TrendingDownIcon from '@mui/icons-material/TrendingDown'
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
+import ShowChartIcon from '@mui/icons-material/ShowChart'
 import { useTranslation } from 'react-i18next'
 import { useTransactionStore } from '@/stores/transactionStore'
 import { StatCard } from '@/components/ui/StatCard'
@@ -34,7 +35,7 @@ export default function DashboardPage() {
       </Typography>
 
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 12, sm: 4 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title={t('dashboard.balance')}
             value={formatCurrency(summary?.balance ?? 0)}
@@ -42,7 +43,7 @@ export default function DashboardPage() {
             color={summary && summary.balance >= 0 ? 'success.main' : 'error.main'}
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 4 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title={t('dashboard.totalIncome')}
             value={formatCurrency(summary?.totalIncome ?? 0)}
@@ -50,12 +51,20 @@ export default function DashboardPage() {
             color="success.main"
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 4 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title={t('dashboard.totalExpense')}
             value={formatCurrency(summary?.totalExpense ?? 0)}
             icon={<TrendingDownIcon fontSize="inherit" />}
             color="error.main"
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard
+            title={t('dashboard.totalInvestment')}
+            value={formatCurrency(summary?.totalInvestment ?? 0)}
+            icon={<ShowChartIcon fontSize="inherit" />}
+            color="#7b1fa2"
           />
         </Grid>
       </Grid>

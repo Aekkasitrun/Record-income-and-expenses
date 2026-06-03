@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 export const categorySchema = z.object({
   name: z.string().min(1, 'Name is required').max(100),
-  type: z.enum(['INCOME', 'EXPENSE']),
+  type: z.enum(['INCOME', 'EXPENSE', 'INVESTMENT']),
   icon: z.string().optional(),
   color: z
     .string()

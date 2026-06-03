@@ -61,6 +61,7 @@ export function CategoryForm({ open, onClose, onSubmit, initialData }: CategoryF
                 <Select {...field} label={t('forms.type')}>
                   <MenuItem value="INCOME">{t('forms.income')}</MenuItem>
                   <MenuItem value="EXPENSE">{t('forms.expense')}</MenuItem>
+                  <MenuItem value="INVESTMENT">{t('forms.investment')}</MenuItem>
                 </Select>
                 {errors.type && <FormHelperText>{errors.type.message}</FormHelperText>}
               </FormControl>

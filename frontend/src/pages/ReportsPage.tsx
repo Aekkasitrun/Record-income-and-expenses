@@ -21,6 +21,7 @@ export default function ReportsPage() {
   const [yearlyData, setYearlyData] = useState<YearlyMonthData[]>([])
   const [expenseByCategory, setExpenseByCategory] = useState<CategoryReport[]>([])
   const [incomeByCategory, setIncomeByCategory] = useState<CategoryReport[]>([])
+  const [investmentByCategory, setInvestmentByCategory] = useState<CategoryReport[]>([])
   const [loading, setLoading] = useState(false)
   const [expandedCatIds, setExpandedCatIds] = useState<Set<number>>(new Set())
   const { t, i18n } = useTranslation()
@@ -36,11 +37,13 @@ export default function ReportsPage() {
       reportService.getYearly(year),
       reportService.getByCategory('EXPENSE'),
       reportService.getByCategory('INCOME'),
+      reportService.getByCategory('INVESTMENT'),
     ])
-      .then(([yearly, expense, income]) => {
+      .then(([yearly, expense, income, investment]) => {
         setYearlyData(yearly.months)
         setExpenseByCategory(expense)
         setIncomeByCategory(income)
+        setInvestmentByCategory(investment)
       })
       .finally(() => setLoading(false))
   }, [year])
@@ -139,6 +142,7 @@ export default function ReportsPage() {
               series={[
                 { data: yearlyData.map((m) => m.income), label: t('reports.seriesIncome'), color: '#2e7d32' },
                 { data: yearlyData.map((m) => m.expense), label: t('reports.seriesExpense'), color: '#d32f2f' },
+                { data: yearlyData.map((m) => m.investment), label: t('reports.seriesInvestment'), color: '#7b1fa2' },
               ]}
               height={350}
               margin={{ left: 80 }}
@@ -148,7 +152,7 @@ export default function ReportsPage() {
         </Card>
       ) : (
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom color="error.main">{t('reports.expensesByCategory')}</Typography>
@@ -174,7 +178,7 @@ export default function ReportsPage() {
               </CardContent>
             </Card>
           </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom color="success.main">{t('reports.incomeByCategory')}</Typography>
@@ -195,6 +199,32 @@ export default function ReportsPage() {
                       height={260}
                     />
                     {renderCategoryList(incomeByCategory)}
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom sx={{ color: '#7b1fa2' }}>{t('reports.investmentByCategory')}</Typography>
+                {investmentByCategory.length === 0 ? (
+                  <Typography color="text.secondary" align="center" sx={{ py: 4 }}>{t('reports.noInvestmentData')}</Typography>
+                ) : (
+                  <>
+                    <PieChart
+                      series={[{
+                        data: investmentByCategory.map((c, i) => ({
+                          id: i,
+                          value: c.total,
+                          label: c.category.name,
+                          color: c.category.color,
+                        })),
+                        innerRadius: 40,
+                      }]}
+                      height={260}
+                    />
+                    {renderCategoryList(investmentByCategory)}
                   </>
                 )}
               </CardContent>

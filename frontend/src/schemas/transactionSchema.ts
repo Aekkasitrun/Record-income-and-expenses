@@ -5,7 +5,7 @@ export const transactionSchema = z.object({
     .number({ error: 'Amount is required' })
     .positive('Amount must be positive')
     .max(999999999999999, 'Amount too large'),
-  type: z.enum(['INCOME', 'EXPENSE']),
+  type: z.enum(['INCOME', 'EXPENSE', 'INVESTMENT']),
   date: z.string().min(1, 'Date is required'),
   categoryId: z.number({ error: 'Category is required' }).int().positive(),
   subCategoryId: z.number().int().positive().optional(),

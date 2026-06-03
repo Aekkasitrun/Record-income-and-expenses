@@ -79,7 +79,7 @@ export default function TransactionsPage() {
             label={t('transactions.filterType')}
             value={filters.type ?? 'ALL'}
             onChange={(e) => {
-              const val = e.target.value as 'INCOME' | 'EXPENSE' | 'ALL'
+              const val = e.target.value as 'INCOME' | 'EXPENSE' | 'INVESTMENT' | 'ALL'
               const type = val === 'ALL' ? undefined : val
               setFilters({ type, page: 1, categoryId: undefined, subCategoryId: undefined })
               fetchTransactions({ type, page: 1, categoryId: undefined, subCategoryId: undefined })
@@ -88,6 +88,7 @@ export default function TransactionsPage() {
             <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
             <MenuItem value="INCOME">{t('transactions.income')}</MenuItem>
             <MenuItem value="EXPENSE">{t('transactions.expense')}</MenuItem>
+            <MenuItem value="INVESTMENT">{t('transactions.investment')}</MenuItem>
           </Select>
         </FormControl>
 
@@ -171,12 +172,17 @@ export default function TransactionsPage() {
                     <TableCell>{tx.description || '—'}</TableCell>
                     <TableCell>
                       <Chip
-                        label={tx.type === 'INCOME' ? t('transactions.income') : t('transactions.expense')}
-                        color={tx.type === 'INCOME' ? 'success' : 'error'}
+                        label={
+                          tx.type === 'INCOME' ? t('transactions.income') :
+                          tx.type === 'INVESTMENT' ? t('transactions.investment') :
+                          t('transactions.expense')
+                        }
+                        color={tx.type === 'INCOME' ? 'success' : tx.type === 'EXPENSE' ? 'error' : 'default'}
                         size="small"
+                        sx={tx.type === 'INVESTMENT' ? { backgroundColor: '#7b1fa2', color: '#fff' } : undefined}
                       />
                     </TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 'bold', color: tx.type === 'INCOME' ? 'success.main' : 'error.main' }}>
+                    <TableCell align="right" sx={{ fontWeight: 'bold', color: tx.type === 'INCOME' ? 'success.main' : tx.type === 'INVESTMENT' ? '#7b1fa2' : 'error.main' }}>
                       {tx.type === 'INCOME' ? '+' : '-'}{formatCurrency(tx.amount)}
                     </TableCell>
                     <TableCell align="center">
@@ -214,7 +220,7 @@ export default function TransactionsPage() {
         open={!!deleteTarget}
         title={t('transactions.deleteTitle')}
         message={deleteTarget ? t('transactions.deleteMessage', {
-          type: deleteTarget.type === 'INCOME' ? t('transactions.income') : t('transactions.expense'),
+          type: deleteTarget.type === 'INCOME' ? t('transactions.income') : deleteTarget.type === 'INVESTMENT' ? t('transactions.investment') : t('transactions.expense'),
           amount: formatCurrency(deleteTarget.amount),
         }) : ''}
         onConfirm={handleDelete}

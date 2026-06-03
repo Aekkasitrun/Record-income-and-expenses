@@ -15,6 +15,10 @@ const defaultCategories = [
   { name: 'Health', type: TransactionType.EXPENSE, icon: 'favorite', color: '#d81b60', isDefault: true },
   { name: 'Education', type: TransactionType.EXPENSE, icon: 'school', color: '#0277bd', isDefault: true },
   { name: 'Other Expense', type: TransactionType.EXPENSE, icon: 'category', color: '#546e7a', isDefault: true },
+  { name: 'หุ้น', type: TransactionType.INVESTMENT, icon: 'trending_up', color: '#6a1b9a', isDefault: true },
+  { name: 'กองทุน', type: TransactionType.INVESTMENT, icon: 'account_balance', color: '#4527a0', isDefault: true },
+  { name: 'อสังหาริมทรัพย์', type: TransactionType.INVESTMENT, icon: 'home', color: '#283593', isDefault: true },
+  { name: 'การลงทุนอื่นๆ', type: TransactionType.INVESTMENT, icon: 'savings', color: '#00695c', isDefault: true },
 ]
 
 async function main() {
@@ -26,7 +30,7 @@ async function main() {
       create: cat,
     })
   }
-  console.log('Seeding complete. 12 categories created.')
+  console.log('Seeding complete. 16 categories created.')
 }
 
 main()

@@ -12,6 +12,7 @@
     "balance": "ยอดคงเหลือ",
     "totalIncome": "รายรับทั้งหมด",
     "totalExpense": "รายจ่ายทั้งหมด",
+    "totalInvestment": "การลงทุนทั้งหมด",
     "recentTransactions": "รายการล่าสุด",
     "noTransactions": "ยังไม่มีรายการ เพิ่มรายการแรกของคุณ!"
   },
@@ -24,6 +25,7 @@
     "all": "ทั้งหมด",
     "income": "รายรับ",
     "expense": "รายจ่าย",
+    "investment": "การลงทุน",
     "colDate": "วันที่",
     "colCategory": "หมวดหมู่",
     "colDescription": "รายละเอียด",
@@ -42,6 +44,7 @@
     "addCategory": "เพิ่มหมวดหมู่",
     "incomeCategories": "หมวดหมู่รายรับ ({{count}})",
     "expenseCategories": "หมวดหมู่รายจ่าย ({{count}})",
+    "investmentCategories": "หมวดหมู่การลงทุน ({{count}})",
     "defaultLabel": "ค่าเริ่มต้น",
     "deleteTitle": "ลบหมวดหมู่",
     "deleteMessage": "ลบ \"{{name}}\"? การลบจะล้มเหลวหากมีรายการที่ใช้หมวดหมู่นี้",
@@ -71,8 +74,11 @@
     "incomeByCategory": "รายรับตามหมวดหมู่",
     "noExpenseData": "ไม่มีข้อมูลรายจ่าย",
     "noIncomeData": "ไม่มีข้อมูลรายรับ",
+    "noInvestmentData": "ไม่มีข้อมูลการลงทุน",
+    "investmentByCategory": "การลงทุนตามหมวดหมู่",
     "seriesIncome": "รายรับ",
     "seriesExpense": "รายจ่าย",
+    "seriesInvestment": "การลงทุน",
     "categoryCount": "{{count}} รายการ"
   },
   "forms": {
@@ -92,6 +98,7 @@
     "color": "สี",
     "income": "รายรับ",
     "expense": "รายจ่าย",
+    "investment": "การลงทุน",
     "cancel": "ยกเลิก",
     "saving": "กำลังบันทึก...",
     "update": "อัปเดต",

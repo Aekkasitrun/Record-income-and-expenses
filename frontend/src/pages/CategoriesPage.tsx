@@ -98,6 +98,7 @@ export default function CategoriesPage() {
 
   const income = categories.filter((c) => c.type === 'INCOME')
   const expense = categories.filter((c) => c.type === 'EXPENSE')
+  const investment = categories.filter((c) => c.type === 'INVESTMENT')
 
   const renderSection = (title: string, items: Category[], color: string) => (
     <Box sx={{ mb: 4 }}>
@@ -201,6 +202,7 @@ export default function CategoriesPage() {
         <>
           {renderSection(t('categories.incomeCategories', { count: income.length }), income, '#2e7d32')}
           {renderSection(t('categories.expenseCategories', { count: expense.length }), expense, '#d32f2f')}
+          {renderSection(t('categories.investmentCategories', { count: investment.length }), investment, '#7b1fa2')}
         </>
       )}
 

@@ -11,6 +11,11 @@ import MovieIcon from '@mui/icons-material/Movie'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import SchoolIcon from '@mui/icons-material/School'
 import LocalCafeIcon from '@mui/icons-material/LocalCafe';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance'
+import HomeIcon from '@mui/icons-material/Home'
+import SavingsIcon from '@mui/icons-material/Savings'
+import ShowChartIcon from '@mui/icons-material/ShowChart'
+import CurrencyBitcoinIcon from '@mui/icons-material/CurrencyBitcoin';
 import type { SvgIconComponent } from '@mui/icons-material'
 
 export const ICON_MAP: Record<string, SvgIconComponent> = {
@@ -27,6 +32,11 @@ export const ICON_MAP: Record<string, SvgIconComponent> = {
   movie: MovieIcon,
   favorite: FavoriteIcon,
   school: SchoolIcon,
+  account_balance: AccountBalanceIcon,
+  home: HomeIcon,
+  savings: SavingsIcon,
+  show_chart: ShowChartIcon,
+  currency_bitcoin: CurrencyBitcoinIcon,
 }
 
 export const MUI_ICONS = Object.keys(ICON_MAP)

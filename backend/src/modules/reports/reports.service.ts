@@ -25,13 +25,15 @@ export class ReportsService {
 
     const income = summary.find((s) => s.type === TransactionType.INCOME)?._sum.amount ?? 0;
     const expense = summary.find((s) => s.type === TransactionType.EXPENSE)?._sum.amount ?? 0;
+    const investment = summary.find((s) => s.type === TransactionType.INVESTMENT)?._sum.amount ?? 0;
 
     return {
       year,
       month,
       totalIncome: Number(income),
       totalExpense: Number(expense),
-      balance: Number(income) - Number(expense),
+      totalInvestment: Number(investment),
+      balance: Number(income) - Number(expense) - Number(investment),
       transactions: transactions.map((t) => ({ ...t, amount: Number(t.amount) })),
     };
   }
@@ -49,6 +51,7 @@ export class ReportsService {
       month: i + 1,
       income: 0,
       expense: 0,
+      investment: 0,
       balance: 0,
     }));
 
@@ -57,10 +60,12 @@ export class ReportsService {
       const amount = Number(tx.amount);
       if (tx.type === TransactionType.INCOME) {
         months[m].income += amount;
+      } else if (tx.type === TransactionType.INVESTMENT) {
+        months[m].investment += amount;
       } else {
         months[m].expense += amount;
       }
-      months[m].balance = months[m].income - months[m].expense;
+      months[m].balance = months[m].income - months[m].expense - months[m].investment;
     }
 
     return { year, months };

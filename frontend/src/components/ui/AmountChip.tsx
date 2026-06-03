@@ -9,12 +9,14 @@ interface AmountChipProps {
 
 export function AmountChip({ amount, type }: AmountChipProps) {
   const isIncome = type === 'INCOME'
+  const isInvestment = type === 'INVESTMENT'
   return (
     <Chip
       label={`${isIncome ? '+' : '-'}${formatCurrency(amount)}`}
-      color={isIncome ? 'success' : 'error'}
+      color={isIncome ? 'success' : isInvestment ? 'default' : 'error'}
       size="small"
       variant="outlined"
+      sx={isInvestment ? { borderColor: '#7b1fa2', color: '#7b1fa2' } : undefined}
     />
   )
 }

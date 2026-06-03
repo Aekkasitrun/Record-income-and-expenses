@@ -12,6 +12,7 @@
     "balance": "Balance",
     "totalIncome": "Total Income",
     "totalExpense": "Total Expense",
+    "totalInvestment": "Total Investment",
     "recentTransactions": "Recent Transactions",
     "noTransactions": "No transactions yet. Add your first one!"
   },
@@ -24,6 +25,7 @@
     "all": "All",
     "income": "Income",
     "expense": "Expense",
+    "investment": "Investment",
     "colDate": "Date",
     "colCategory": "Category",
     "colDescription": "Description",
@@ -42,6 +44,7 @@
     "addCategory": "Add Category",
     "incomeCategories": "Income Categories ({{count}})",
     "expenseCategories": "Expense Categories ({{count}})",
+    "investmentCategories": "Investment Categories ({{count}})",
     "defaultLabel": "Default",
     "deleteTitle": "Delete Category",
     "deleteMessage": "Delete \"{{name}}\"? This will fail if transactions use this category.",
@@ -71,8 +74,11 @@
     "incomeByCategory": "Income by Category",
     "noExpenseData": "No expense data",
     "noIncomeData": "No income data",
+    "noInvestmentData": "No investment data",
+    "investmentByCategory": "Investment by Category",
     "seriesIncome": "Income",
     "seriesExpense": "Expense",
+    "seriesInvestment": "Investment",
     "categoryCount": "{{count}} transactions"
   },
   "forms": {
@@ -92,6 +98,7 @@
     "color": "Color",
     "income": "Income",
     "expense": "Expense",
+    "investment": "Investment",
     "cancel": "Cancel",
     "saving": "Saving...",
     "update": "Update",

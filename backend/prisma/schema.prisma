@@ -10,6 +10,7 @@ datasource db {
 enum TransactionType {
   INCOME
   EXPENSE
+  INVESTMENT
 }
 
 model Category {

@@ -25,6 +25,7 @@ export interface TransactionListResponse {
 export interface TransactionSummary {
   totalIncome: number
   totalExpense: number
+  totalInvestment: number
   balance: number
 }
 

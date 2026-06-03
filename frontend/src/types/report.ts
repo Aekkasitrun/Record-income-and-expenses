@@ -6,6 +6,7 @@ export interface MonthlyReport {
   month: number
   totalIncome: number
   totalExpense: number
+  totalInvestment: number
   balance: number
   transactions: Transaction[]
 }
@@ -14,6 +15,7 @@ export interface YearlyMonthData {
   month: number
   income: number
   expense: number
+  investment: number
   balance: number
 }
 

@@ -22,7 +22,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
       target: dev-deps
-    command: npm run start:dev
+    command: sh -c "npx prisma generate && npm run start:dev"
     ports:
       - "4000:4000"
     volumes:

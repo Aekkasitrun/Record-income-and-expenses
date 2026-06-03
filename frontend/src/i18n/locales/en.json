@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "appName": "Finance Tracker",
+    "dashboard": "Dashboard",
+    "transactions": "Transactions",
+    "categories": "Categories",
+    "reports": "Reports"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "{{month}} {{year}} overview",
+    "balance": "Balance",
+    "totalIncome": "Total Income",
+    "totalExpense": "Total Expense",
+    "recentTransactions": "Recent Transactions",
+    "noTransactions": "No transactions yet. Add your first one!"
+  },
+  "transactions": {
+    "title": "Transactions",
+    "addTransaction": "Add Transaction",
+    "filterType": "Type",
+    "all": "All",
+    "income": "Income",
+    "expense": "Expense",
+    "colDate": "Date",
+    "colCategory": "Category",
+    "colDescription": "Description",
+    "colType": "Type",
+    "colAmount": "Amount",
+    "colActions": "Actions",
+    "noTransactions": "No transactions found",
+    "totalRecords": "Total: {{count}} records",
+    "deleteTitle": "Delete Transaction",
+    "deleteMessage": "Delete this {{type}} of {{amount}}?",
+    "tooltipEdit": "Edit",
+    "tooltipDelete": "Delete"
+  },
+  "categories": {
+    "title": "Categories",
+    "addCategory": "Add Category",
+    "incomeCategories": "Income Categories ({{count}})",
+    "expenseCategories": "Expense Categories ({{count}})",
+    "defaultLabel": "Default",
+    "deleteTitle": "Delete Category",
+    "deleteMessage": "Delete \"{{name}}\"? This will fail if transactions use this category.",
+    "tooltipEdit": "Edit",
+    "tooltipDelete": "Delete"
+  },
+  "reports": {
+    "title": "Reports",
+    "yearLabel": "Year",
+    "tabYearly": "Yearly Overview",
+    "tabByCategory": "By Category",
+    "incomeVsExpense": "Income vs Expense — {{year}}",
+    "expensesByCategory": "Expenses by Category",
+    "incomeByCategory": "Income by Category",
+    "noExpenseData": "No expense data",
+    "noIncomeData": "No income data",
+    "seriesIncome": "Income",
+    "seriesExpense": "Expense"
+  },
+  "forms": {
+    "addTransaction": "Add Transaction",
+    "editTransaction": "Edit Transaction",
+    "addCategory": "Add Category",
+    "editCategory": "Edit Category",
+    "type": "Type",
+    "amount": "Amount (THB)",
+    "category": "Category",
+    "date": "Date",
+    "description": "Description (optional)",
+    "name": "Name",
+    "icon": "Icon",
+    "color": "Color",
+    "income": "Income",
+    "expense": "Expense",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "update": "Update",
+    "add": "Add"
+  },
+  "ui": {
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "store": {
+    "failedLoadTransactions": "Failed to load transactions",
+    "failedLoadSummary": "Failed to load summary",
+    "transactionAdded": "Transaction added",
+    "transactionUpdated": "Transaction updated",
+    "transactionDeleted": "Transaction deleted",
+    "failedLoadCategories": "Failed to load categories",
+    "categoryCreated": "Category created",
+    "categoryUpdated": "Category updated",
+    "categoryDeleted": "Category deleted"
+  },
+  "language": {
+    "toggle": "ภาษาไทย"
+  }
+}

@@ -1,6 +1,8 @@
+import { useMemo } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { ThemeProvider, CssBaseline } from '@mui/material'
-import { theme } from '@/theme/theme'
+import { createAppTheme } from '@/theme/theme'
+import { useUiStore } from '@/stores/uiStore'
 import AppLayout from '@/components/layout/AppLayout'
 import DashboardPage from '@/pages/DashboardPage'
 import TransactionsPage from '@/pages/TransactionsPage'
@@ -8,6 +10,9 @@ import CategoriesPage from '@/pages/CategoriesPage'
 import ReportsPage from '@/pages/ReportsPage'
 
 export default function App() {
+  const { themeMode } = useUiStore()
+  const theme = useMemo(() => createAppTheme(themeMode), [themeMode])
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

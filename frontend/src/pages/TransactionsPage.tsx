@@ -7,22 +7,22 @@ import {
 import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import { useTranslation } from 'react-i18next'
 import { useTransactionStore } from '@/stores/transactionStore'
 import { TransactionForm } from '@/components/forms/TransactionForm'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { CategoryBadge } from '@/components/ui/CategoryBadge'
+import { formatCurrency } from '@/utils/locale'
 import type { Transaction } from '@/types/transaction'
 import type { TransactionFormData } from '@/schemas/transactionSchema'
 import dayjs from 'dayjs'
-
-const formatCurrency = (amount: number) =>
-  new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB' }).format(amount)
 
 export default function TransactionsPage() {
   const { transactions, isLoading, total, totalPages, filters, fetchTransactions, createTransaction, updateTransaction, deleteTransaction, setFilters } = useTransactionStore()
   const [formOpen, setFormOpen] = useState(false)
   const [editTarget, setEditTarget] = useState<Transaction | undefined>()
   const [deleteTarget, setDeleteTarget] = useState<Transaction | undefined>()
+  const { t } = useTranslation()
 
   useEffect(() => {
     fetchTransactions()
@@ -56,17 +56,17 @@ export default function TransactionsPage() {
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Transactions</Typography>
+        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{t('transactions.title')}</Typography>
         <Button variant="contained" startIcon={<AddIcon />} onClick={() => { setEditTarget(undefined); setFormOpen(true) }}>
-          Add Transaction
+          {t('transactions.addTransaction')}
         </Button>
       </Box>
 
       <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
         <FormControl size="small" sx={{ minWidth: 140 }}>
-          <InputLabel>Type</InputLabel>
+          <InputLabel>{t('transactions.filterType')}</InputLabel>
           <Select
-            label="Type"
+            label={t('transactions.filterType')}
             value={filters.type ?? 'ALL'}
             onChange={(e) => {
               const val = e.target.value as 'INCOME' | 'EXPENSE' | 'ALL'
@@ -75,9 +75,9 @@ export default function TransactionsPage() {
               fetchTransactions({ type, page: 1 })
             }}
           >
-            <MenuItem value="ALL">All</MenuItem>
-            <MenuItem value="INCOME">Income</MenuItem>
-            <MenuItem value="EXPENSE">Expense</MenuItem>
+            <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
+            <MenuItem value="INCOME">{t('transactions.income')}</MenuItem>
+            <MenuItem value="EXPENSE">{t('transactions.expense')}</MenuItem>
           </Select>
         </FormControl>
       </Stack>
@@ -89,19 +89,19 @@ export default function TransactionsPage() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Date</TableCell>
-                <TableCell>Category</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell>Type</TableCell>
-                <TableCell align="right">Amount</TableCell>
-                <TableCell align="center">Actions</TableCell>
+                <TableCell>{t('transactions.colDate')}</TableCell>
+                <TableCell>{t('transactions.colCategory')}</TableCell>
+                <TableCell>{t('transactions.colDescription')}</TableCell>
+                <TableCell>{t('transactions.colType')}</TableCell>
+                <TableCell align="right">{t('transactions.colAmount')}</TableCell>
+                <TableCell align="center">{t('transactions.colActions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {transactions.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} align="center" sx={{ py: 4, color: 'text.secondary' }}>
-                    No transactions found
+                    {t('transactions.noTransactions')}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -111,14 +111,18 @@ export default function TransactionsPage() {
                     <TableCell><CategoryBadge category={tx.category} /></TableCell>
                     <TableCell>{tx.description || '—'}</TableCell>
                     <TableCell>
-                      <Chip label={tx.type} color={tx.type === 'INCOME' ? 'success' : 'error'} size="small" />
+                      <Chip
+                        label={tx.type === 'INCOME' ? t('transactions.income') : t('transactions.expense')}
+                        color={tx.type === 'INCOME' ? 'success' : 'error'}
+                        size="small"
+                      />
                     </TableCell>
                     <TableCell align="right" sx={{ fontWeight: 'bold', color: tx.type === 'INCOME' ? 'success.main' : 'error.main' }}>
                       {tx.type === 'INCOME' ? '+' : '-'}{formatCurrency(tx.amount)}
                     </TableCell>
                     <TableCell align="center">
-                      <Tooltip title="Edit"><IconButton size="small" onClick={() => handleEdit(tx)}><EditIcon fontSize="small" /></IconButton></Tooltip>
-                      <Tooltip title="Delete"><IconButton size="small" color="error" onClick={() => setDeleteTarget(tx)}><DeleteIcon fontSize="small" /></IconButton></Tooltip>
+                      <Tooltip title={t('transactions.tooltipEdit')}><IconButton size="small" onClick={() => handleEdit(tx)}><EditIcon fontSize="small" /></IconButton></Tooltip>
+                      <Tooltip title={t('transactions.tooltipDelete')}><IconButton size="small" color="error" onClick={() => setDeleteTarget(tx)}><DeleteIcon fontSize="small" /></IconButton></Tooltip>
                     </TableCell>
                   </TableRow>
                 ))
@@ -135,7 +139,9 @@ export default function TransactionsPage() {
       )}
 
       <Box sx={{ mt: 1 }}>
-        <Typography variant="caption" color="text.secondary">Total: {total} records</Typography>
+        <Typography variant="caption" color="text.secondary">
+          {t('transactions.totalRecords', { count: total })}
+        </Typography>
       </Box>
 
       <TransactionForm
@@ -147,11 +153,14 @@ export default function TransactionsPage() {
 
       <ConfirmDialog
         open={!!deleteTarget}
-        title="Delete Transaction"
-        message={`Delete this ${deleteTarget?.type.toLowerCase()} of ${deleteTarget ? formatCurrency(deleteTarget.amount) : ''}?`}
+        title={t('transactions.deleteTitle')}
+        message={deleteTarget ? t('transactions.deleteMessage', {
+          type: deleteTarget.type === 'INCOME' ? t('transactions.income') : t('transactions.expense'),
+          amount: formatCurrency(deleteTarget.amount),
+        }) : ''}
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(undefined)}
-        confirmLabel="Delete"
+        confirmLabel={t('transactions.tooltipDelete')}
       />
     </Box>
   )

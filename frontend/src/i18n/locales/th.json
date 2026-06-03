@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "appName": "บันทึกรายรับรายจ่าย",
+    "dashboard": "แดชบอร์ด",
+    "transactions": "รายการ",
+    "categories": "หมวดหมู่",
+    "reports": "รายงาน"
+  },
+  "dashboard": {
+    "title": "แดชบอร์ด",
+    "overview": "ภาพรวม {{month}} {{year}}",
+    "balance": "ยอดคงเหลือ",
+    "totalIncome": "รายรับทั้งหมด",
+    "totalExpense": "รายจ่ายทั้งหมด",
+    "recentTransactions": "รายการล่าสุด",
+    "noTransactions": "ยังไม่มีรายการ เพิ่มรายการแรกของคุณ!"
+  },
+  "transactions": {
+    "title": "รายการ",
+    "addTransaction": "เพิ่มรายการ",
+    "filterType": "ประเภท",
+    "all": "ทั้งหมด",
+    "income": "รายรับ",
+    "expense": "รายจ่าย",
+    "colDate": "วันที่",
+    "colCategory": "หมวดหมู่",
+    "colDescription": "รายละเอียด",
+    "colType": "ประเภท",
+    "colAmount": "จำนวน",
+    "colActions": "จัดการ",
+    "noTransactions": "ไม่พบรายการ",
+    "totalRecords": "ทั้งหมด: {{count}} รายการ",
+    "deleteTitle": "ลบรายการ",
+    "deleteMessage": "ลบ{{type}}จำนวน {{amount}} นี้?",
+    "tooltipEdit": "แก้ไข",
+    "tooltipDelete": "ลบ"
+  },
+  "categories": {
+    "title": "หมวดหมู่",
+    "addCategory": "เพิ่มหมวดหมู่",
+    "incomeCategories": "หมวดหมู่รายรับ ({{count}})",
+    "expenseCategories": "หมวดหมู่รายจ่าย ({{count}})",
+    "defaultLabel": "ค่าเริ่มต้น",
+    "deleteTitle": "ลบหมวดหมู่",
+    "deleteMessage": "ลบ \"{{name}}\"? การลบจะล้มเหลวหากมีรายการที่ใช้หมวดหมู่นี้",
+    "tooltipEdit": "แก้ไข",
+    "tooltipDelete": "ลบ"
+  },
+  "reports": {
+    "title": "รายงาน",
+    "yearLabel": "ปี",
+    "tabYearly": "ภาพรวมรายปี",
+    "tabByCategory": "ตามหมวดหมู่",
+    "incomeVsExpense": "รายรับ vs รายจ่าย — {{year}}",
+    "expensesByCategory": "รายจ่ายตามหมวดหมู่",
+    "incomeByCategory": "รายรับตามหมวดหมู่",
+    "noExpenseData": "ไม่มีข้อมูลรายจ่าย",
+    "noIncomeData": "ไม่มีข้อมูลรายรับ",
+    "seriesIncome": "รายรับ",
+    "seriesExpense": "รายจ่าย"
+  },
+  "forms": {
+    "addTransaction": "เพิ่มรายการ",
+    "editTransaction": "แก้ไขรายการ",
+    "addCategory": "เพิ่มหมวดหมู่",
+    "editCategory": "แก้ไขหมวดหมู่",
+    "type": "ประเภท",
+    "amount": "จำนวน (บาท)",
+    "category": "หมวดหมู่",
+    "date": "วันที่",
+    "description": "รายละเอียด (ไม่บังคับ)",
+    "name": "ชื่อ",
+    "icon": "ไอคอน",
+    "color": "สี",
+    "income": "รายรับ",
+    "expense": "รายจ่าย",
+    "cancel": "ยกเลิก",
+    "saving": "กำลังบันทึก...",
+    "update": "อัปเดต",
+    "add": "เพิ่ม"
+  },
+  "ui": {
+    "cancel": "ยกเลิก",
+    "confirm": "ยืนยัน"
+  },
+  "store": {
+    "failedLoadTransactions": "โหลดรายการไม่สำเร็จ",
+    "failedLoadSummary": "โหลดสรุปไม่สำเร็จ",
+    "transactionAdded": "เพิ่มรายการสำเร็จ",
+    "transactionUpdated": "อัปเดตรายการสำเร็จ",
+    "transactionDeleted": "ลบรายการสำเร็จ",
+    "failedLoadCategories": "โหลดหมวดหมู่ไม่สำเร็จ",
+    "categoryCreated": "สร้างหมวดหมู่สำเร็จ",
+    "categoryUpdated": "อัปเดตหมวดหมู่สำเร็จ",
+    "categoryDeleted": "ลบหมวดหมู่สำเร็จ"
+  },
+  "language": {
+    "toggle": "English"
+  }
+}

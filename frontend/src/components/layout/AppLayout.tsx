@@ -7,16 +7,12 @@ import CategoryIcon from '@mui/icons-material/Category'
 import BarChartIcon from '@mui/icons-material/BarChart'
 import MenuIcon from '@mui/icons-material/Menu'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useUiStore } from '@/stores/uiStore'
+import { LanguageToggle } from '@/components/ui/LanguageToggle'
+import { ThemeModeToggle } from '@/components/ui/ThemeModeToggle'
 
 const DRAWER_WIDTH = 240
-
-const navItems = [
-  { label: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
-  { label: 'Transactions', path: '/transactions', icon: <ReceiptLongIcon /> },
-  { label: 'Categories', path: '/categories', icon: <CategoryIcon /> },
-  { label: 'Reports', path: '/reports', icon: <BarChartIcon /> },
-]
 
 export default function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -25,6 +21,14 @@ export default function AppLayout() {
   const muiTheme = useTheme()
   const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'))
   const { snackbar, closeSnackbar } = useUiStore()
+  const { t } = useTranslation()
+
+  const navItems = [
+    { label: t('nav.dashboard'), path: '/dashboard', icon: <DashboardIcon /> },
+    { label: t('nav.transactions'), path: '/transactions', icon: <ReceiptLongIcon /> },
+    { label: t('nav.categories'), path: '/categories', icon: <CategoryIcon /> },
+    { label: t('nav.reports'), path: '/reports', icon: <BarChartIcon /> },
+  ]
 
   const drawer = (
     <Box sx={{ mt: 2 }}>
@@ -58,8 +62,11 @@ export default function AppLayout() {
             </IconButton>
           )}
           <Typography variant="h6" noWrap component="div">
-            Finance Tracker
+            {t('nav.appName')}
           </Typography>
+          <Box sx={{ flexGrow: 1 }} />
+          <ThemeModeToggle />
+          <LanguageToggle />
         </Toolbar>
       </AppBar>
 

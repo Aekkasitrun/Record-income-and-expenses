@@ -44,7 +44,7 @@ POSTGRES_PASSWORD=your_strong_password_here
 
 **3. Build และ Start containers**
 ```bash
-docker compose -f docker-compose.dev.yml up -d --build
+docker compose -f docker-compose.dev.yml build --no-cache && docker compose -f docker-compose.dev.yml up -d
 ```
 
 รอจนกว่า containers ทั้งหมดจะ start (ประมาณ 1-3 นาทีครั้งแรก)

@@ -19,9 +19,11 @@
     "@mui/x-date-pickers": "^9.3.0",
     "axios": "^1.16.1",
     "dayjs": "^1.11.21",
+    "i18next": "^26.3.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-hook-form": "^7.77.0",
+    "react-i18next": "^17.0.8",
     "react-router-dom": "^7.16.0",
     "zod": "^4.4.3",
     "zustand": "^5.0.14"

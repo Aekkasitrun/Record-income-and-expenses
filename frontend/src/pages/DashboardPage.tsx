@@ -3,17 +3,17 @@ import { Grid, Typography, Box, Card, CardContent, Divider, CircularProgress } f
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import TrendingDownIcon from '@mui/icons-material/TrendingDown'
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
+import { useTranslation } from 'react-i18next'
 import { useTransactionStore } from '@/stores/transactionStore'
 import { StatCard } from '@/components/ui/StatCard'
 import { AmountChip } from '@/components/ui/AmountChip'
 import { CategoryBadge } from '@/components/ui/CategoryBadge'
+import { formatCurrency } from '@/utils/locale'
 import dayjs from 'dayjs'
-
-const formatCurrency = (amount: number) =>
-  new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB' }).format(amount)
 
 export default function DashboardPage() {
   const { summary, transactions, isLoading, fetchSummary, fetchTransactions } = useTransactionStore()
+  const { t } = useTranslation()
 
   useEffect(() => {
     fetchSummary()
@@ -27,16 +27,16 @@ export default function DashboardPage() {
   return (
     <Box>
       <Typography variant="h5" sx={{ fontWeight: 'bold' }} gutterBottom>
-        Dashboard
+        {t('dashboard.title')}
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        {dayjs().format('MMMM YYYY')} overview
+        {t('dashboard.overview', { month: dayjs().format('MMMM'), year: dayjs().year() })}
       </Typography>
 
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid size={{ xs: 12, sm: 4 }}>
           <StatCard
-            title="Balance"
+            title={t('dashboard.balance')}
             value={formatCurrency(summary?.balance ?? 0)}
             icon={<AccountBalanceWalletIcon fontSize="inherit" />}
             color={summary && summary.balance >= 0 ? 'success.main' : 'error.main'}
@@ -44,7 +44,7 @@ export default function DashboardPage() {
         </Grid>
         <Grid size={{ xs: 12, sm: 4 }}>
           <StatCard
-            title="Total Income"
+            title={t('dashboard.totalIncome')}
             value={formatCurrency(summary?.totalIncome ?? 0)}
             icon={<TrendingUpIcon fontSize="inherit" />}
             color="success.main"
@@ -52,7 +52,7 @@ export default function DashboardPage() {
         </Grid>
         <Grid size={{ xs: 12, sm: 4 }}>
           <StatCard
-            title="Total Expense"
+            title={t('dashboard.totalExpense')}
             value={formatCurrency(summary?.totalExpense ?? 0)}
             icon={<TrendingDownIcon fontSize="inherit" />}
             color="error.main"
@@ -62,11 +62,11 @@ export default function DashboardPage() {
 
       <Card>
         <CardContent>
-          <Typography variant="h6" gutterBottom>Recent Transactions</Typography>
+          <Typography variant="h6" gutterBottom>{t('dashboard.recentTransactions')}</Typography>
           <Divider sx={{ mb: 2 }} />
           {transactions.length === 0 ? (
             <Typography color="text.secondary" align="center" sx={{ py: 4 }}>
-              No transactions yet. Add your first one!
+              {t('dashboard.noTransactions')}
             </Typography>
           ) : (
             transactions.slice(0, 10).map((tx) => (

@@ -8,6 +8,7 @@ import type {
 } from '@/types/transaction'
 import { transactionService } from '@/services/transactionService'
 import { useUiStore } from './uiStore'
+import i18n from '@/i18n/index'
 
 interface TransactionState {
   transactions: Transaction[]
@@ -39,7 +40,7 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
       const result = await transactionService.getAll(merged)
       set({ transactions: result.data, total: result.total, totalPages: result.totalPages })
     } catch {
-      useUiStore.getState().showSnackbar('Failed to load transactions', 'error')
+      useUiStore.getState().showSnackbar(i18n.t('store.failedLoadTransactions'), 'error')
     } finally {
       set({ isLoading: false })
     }
@@ -50,7 +51,7 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
       const summary = await transactionService.getSummary(startDate, endDate)
       set({ summary })
     } catch {
-      useUiStore.getState().showSnackbar('Failed to load summary', 'error')
+      useUiStore.getState().showSnackbar(i18n.t('store.failedLoadSummary'), 'error')
     }
   },
 
@@ -58,21 +59,21 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
     await transactionService.create(data)
     await get().fetchTransactions()
     await get().fetchSummary()
-    useUiStore.getState().showSnackbar('Transaction added', 'success')
+    useUiStore.getState().showSnackbar(i18n.t('store.transactionAdded'), 'success')
   },
 
   updateTransaction: async (id, data) => {
     await transactionService.update(id, data)
     await get().fetchTransactions()
     await get().fetchSummary()
-    useUiStore.getState().showSnackbar('Transaction updated', 'success')
+    useUiStore.getState().showSnackbar(i18n.t('store.transactionUpdated'), 'success')
   },
 
   deleteTransaction: async (id) => {
     await transactionService.remove(id)
     await get().fetchTransactions()
     await get().fetchSummary()
-    useUiStore.getState().showSnackbar('Transaction deleted', 'success')
+    useUiStore.getState().showSnackbar(i18n.t('store.transactionDeleted'), 'success')
   },
 
   setFilters: (filters) => {

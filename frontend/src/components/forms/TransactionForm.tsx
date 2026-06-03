@@ -5,6 +5,7 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField,
   FormControl, InputLabel, Select, MenuItem, FormHelperText, Stack,
 } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 import { transactionSchema, type TransactionFormData } from '@/schemas/transactionSchema'
 import { useCategoryStore } from '@/stores/categoryStore'
 import type { Transaction } from '@/types/transaction'
@@ -19,6 +20,7 @@ interface TransactionFormProps {
 
 export function TransactionForm({ open, onClose, onSubmit, initialData }: TransactionFormProps) {
   const { categories, fetchCategories } = useCategoryStore()
+  const { t } = useTranslation()
 
   const { control, handleSubmit, reset, watch, formState: { errors, isSubmitting } } = useForm<TransactionFormData>({
     resolver: zodResolver(transactionSchema),
@@ -64,7 +66,7 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{initialData ? 'Edit Transaction' : 'Add Transaction'}</DialogTitle>
+      <DialogTitle>{initialData ? t('forms.editTransaction') : t('forms.addTransaction')}</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1 }}>
           <Controller
@@ -72,10 +74,10 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
             control={control}
             render={({ field }) => (
               <FormControl fullWidth error={!!errors.type}>
-                <InputLabel>Type</InputLabel>
-                <Select {...field} label="Type">
-                  <MenuItem value="INCOME">Income</MenuItem>
-                  <MenuItem value="EXPENSE">Expense</MenuItem>
+                <InputLabel>{t('forms.type')}</InputLabel>
+                <Select {...field} label={t('forms.type')}>
+                  <MenuItem value="INCOME">{t('forms.income')}</MenuItem>
+                  <MenuItem value="EXPENSE">{t('forms.expense')}</MenuItem>
                 </Select>
                 {errors.type && <FormHelperText>{errors.type.message}</FormHelperText>}
               </FormControl>
@@ -88,7 +90,7 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Amount (THB)"
+                label={t('forms.amount')}
                 type="number"
                 error={!!errors.amount}
                 helperText={errors.amount?.message}
@@ -103,8 +105,8 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
             control={control}
             render={({ field }) => (
               <FormControl fullWidth error={!!errors.categoryId}>
-                <InputLabel>Category</InputLabel>
-                <Select {...field} label="Category" value={field.value ?? ''} onChange={(e) => field.onChange(Number(e.target.value))}>
+                <InputLabel>{t('forms.category')}</InputLabel>
+                <Select {...field} label={t('forms.category')} value={field.value ?? ''} onChange={(e) => field.onChange(Number(e.target.value))}>
                   {filteredCategories.map((cat) => (
                     <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
                   ))}
@@ -120,7 +122,7 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Date"
+                label={t('forms.date')}
                 type="date"
                 error={!!errors.date}
                 helperText={errors.date?.message}
@@ -135,7 +137,7 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Description (optional)"
+                label={t('forms.description')}
                 multiline
                 rows={2}
                 error={!!errors.description}
@@ -146,9 +148,9 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} disabled={isSubmitting}>Cancel</Button>
+        <Button onClick={onClose} disabled={isSubmitting}>{t('forms.cancel')}</Button>
         <Button onClick={handleSubmit(handleFormSubmit)} variant="contained" disabled={isSubmitting}>
-          {isSubmitting ? 'Saving...' : initialData ? 'Update' : 'Add'}
+          {isSubmitting ? t('forms.saving') : initialData ? t('forms.update') : t('forms.add')}
         </Button>
       </DialogActions>
     </Dialog>

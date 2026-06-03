@@ -7,6 +7,7 @@ import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Icon from '@mui/material/Icon'
+import { useTranslation } from 'react-i18next'
 import { useCategoryStore } from '@/stores/categoryStore'
 import { CategoryForm } from '@/components/forms/CategoryForm'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
@@ -21,6 +22,7 @@ export default function CategoriesPage() {
   const [formOpen, setFormOpen] = useState(false)
   const [editTarget, setEditTarget] = useState<Category | undefined>()
   const [deleteTarget, setDeleteTarget] = useState<Category | undefined>()
+  const { t } = useTranslation()
 
   useEffect(() => {
     fetchCategories()
@@ -53,7 +55,7 @@ export default function CategoriesPage() {
   const renderSection = (title: string, items: Category[], color: string) => (
     <Box sx={{ mb: 4 }}>
       <Typography variant="h6" gutterBottom sx={{ color }}>
-        {title} ({items.length})
+        {title}
       </Typography>
       <Grid container spacing={2}>
         {items.map((cat) => (
@@ -66,11 +68,11 @@ export default function CategoriesPage() {
                   </Box>
                   <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>{cat.name}</Typography>
                 </Box>
-                {cat.isDefault && <Chip label="Default" size="small" variant="outlined" />}
+                {cat.isDefault && <Chip label={t('categories.defaultLabel')} size="small" variant="outlined" />}
               </CardContent>
               <CardActions sx={{ pt: 0, justifyContent: 'flex-end' }}>
-                <Tooltip title="Edit"><IconButton size="small" onClick={() => { setEditTarget(cat); setFormOpen(true) }}><EditIcon fontSize="small" /></IconButton></Tooltip>
-                <Tooltip title="Delete"><IconButton size="small" color="error" onClick={() => setDeleteTarget(cat)}><DeleteIcon fontSize="small" /></IconButton></Tooltip>
+                <Tooltip title={t('categories.tooltipEdit')}><IconButton size="small" onClick={() => { setEditTarget(cat); setFormOpen(true) }}><EditIcon fontSize="small" /></IconButton></Tooltip>
+                <Tooltip title={t('categories.tooltipDelete')}><IconButton size="small" color="error" onClick={() => setDeleteTarget(cat)}><DeleteIcon fontSize="small" /></IconButton></Tooltip>
               </CardActions>
             </Card>
           </Grid>
@@ -82,9 +84,9 @@ export default function CategoriesPage() {
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Categories</Typography>
+        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{t('categories.title')}</Typography>
         <Button variant="contained" startIcon={<AddIcon />} onClick={() => { setEditTarget(undefined); setFormOpen(true) }}>
-          Add Category
+          {t('categories.addCategory')}
         </Button>
       </Box>
 
@@ -92,8 +94,8 @@ export default function CategoriesPage() {
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}><CircularProgress /></Box>
       ) : (
         <>
-          {renderSection('Income Categories', income, '#2e7d32')}
-          {renderSection('Expense Categories', expense, '#d32f2f')}
+          {renderSection(t('categories.incomeCategories', { count: income.length }), income, '#2e7d32')}
+          {renderSection(t('categories.expenseCategories', { count: expense.length }), expense, '#d32f2f')}
         </>
       )}
 
@@ -106,8 +108,8 @@ export default function CategoriesPage() {
 
       <ConfirmDialog
         open={!!deleteTarget}
-        title="Delete Category"
-        message={`Delete "${deleteTarget?.name}"? This will fail if transactions use this category.`}
+        title={t('categories.deleteTitle')}
+        message={deleteTarget ? t('categories.deleteMessage', { name: deleteTarget.name }) : ''}
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(undefined)}
       />

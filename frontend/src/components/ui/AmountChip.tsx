@@ -1,13 +1,11 @@
 import { Chip } from '@mui/material'
 import type { TransactionType } from '@/types/category'
+import { formatCurrency } from '@/utils/locale'
 
 interface AmountChipProps {
   amount: number
   type: TransactionType
 }
-
-const formatCurrency = (amount: number) =>
-  new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB' }).format(amount)
 
 export function AmountChip({ amount, type }: AmountChipProps) {
   const isIncome = type === 'INCOME'

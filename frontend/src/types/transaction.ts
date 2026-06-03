@@ -1,4 +1,4 @@
-import type { Category, TransactionType } from './category'
+import type { Category, SubCategory, TransactionType } from './category'
 
 export interface Transaction {
   id: number
@@ -7,7 +7,9 @@ export interface Transaction {
   description: string | null
   date: string
   categoryId: number
+  subCategoryId: number | null
   category: Category
+  subCategory: SubCategory | null
   createdAt: string
   updatedAt: string
 }
@@ -29,6 +31,7 @@ export interface TransactionSummary {
 export interface TransactionFilters {
   type?: TransactionType
   categoryId?: number
+  subCategoryId?: number
   startDate?: string
   endDate?: string
   page?: number
@@ -40,6 +43,7 @@ export interface CreateTransactionPayload {
   type: TransactionType
   date: string
   categoryId: number
+  subCategoryId?: number
   description?: string
 }
 

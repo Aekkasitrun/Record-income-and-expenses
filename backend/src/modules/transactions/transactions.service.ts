@@ -10,11 +10,12 @@ export class TransactionsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(query: QueryTransactionDto) {
-    const { type, categoryId, startDate, endDate, page = 1, limit = 20 } = query;
+    const { type, categoryId, subCategoryId, startDate, endDate, page = 1, limit = 20 } = query;
 
     const where: Prisma.TransactionWhereInput = {
       ...(type && { type }),
       ...(categoryId && { categoryId }),
+      ...(subCategoryId && { subCategoryId }),
       ...(startDate || endDate
         ? {
             date: {
@@ -28,7 +29,7 @@ export class TransactionsService {
     const [data, total] = await Promise.all([
       this.prisma.transaction.findMany({
         where,
-        include: { category: true },
+        include: { category: true, subCategory: true },
         orderBy: { date: 'desc' },
         skip: (page - 1) * limit,
         take: limit,
@@ -48,7 +49,7 @@ export class TransactionsService {
   async findOne(id: number) {
     const tx = await this.prisma.transaction.findUnique({
       where: { id },
-      include: { category: true },
+      include: { category: true, subCategory: true },
     });
     if (!tx) throw new NotFoundException(`Transaction #${id} not found`);
     return this.serialize(tx);
@@ -93,9 +94,10 @@ export class TransactionsService {
         type: dto.type,
         date: new Date(dto.date),
         categoryId: dto.categoryId,
+        subCategoryId: dto.subCategoryId ?? null,
         description: dto.description,
       },
-      include: { category: true },
+      include: { category: true, subCategory: true },
     });
     return this.serialize(tx);
   }
@@ -109,9 +111,10 @@ export class TransactionsService {
         ...(dto.type && { type: dto.type }),
         ...(dto.date && { date: new Date(dto.date) }),
         ...(dto.categoryId !== undefined && { categoryId: dto.categoryId }),
+        ...('subCategoryId' in dto && { subCategoryId: dto.subCategoryId ?? null }),
         ...(dto.description !== undefined && { description: dto.description }),
       },
-      include: { category: true },
+      include: { category: true, subCategory: true },
     });
     return this.serialize(tx);
   }
@@ -128,9 +131,11 @@ export class TransactionsService {
     description: string | null;
     date: Date;
     categoryId: number;
+    subCategoryId?: number | null;
     createdAt: Date;
     updatedAt: Date;
     category?: { id: number; name: string; icon: string; color: string; type: TransactionType };
+    subCategory?: { id: number; name: string; categoryId: number } | null;
   }) {
     return {
       ...tx,

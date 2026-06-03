@@ -9,6 +9,8 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useTranslation } from 'react-i18next'
 import { useTransactionStore } from '@/stores/transactionStore'
+import { useCategoryStore } from '@/stores/categoryStore'
+import { useSubCategoryStore } from '@/stores/subCategoryStore'
 import { TransactionForm } from '@/components/forms/TransactionForm'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { CategoryBadge } from '@/components/ui/CategoryBadge'
@@ -19,6 +21,8 @@ import dayjs from 'dayjs'
 
 export default function TransactionsPage() {
   const { transactions, isLoading, total, totalPages, filters, fetchTransactions, createTransaction, updateTransaction, deleteTransaction, setFilters } = useTransactionStore()
+  const { categories, fetchCategories } = useCategoryStore()
+  const { subCategories, fetchSubCategories } = useSubCategoryStore()
   const [formOpen, setFormOpen] = useState(false)
   const [editTarget, setEditTarget] = useState<Transaction | undefined>()
   const [deleteTarget, setDeleteTarget] = useState<Transaction | undefined>()
@@ -26,7 +30,9 @@ export default function TransactionsPage() {
 
   useEffect(() => {
     fetchTransactions()
-  }, [fetchTransactions])
+    fetchCategories()
+    fetchSubCategories()
+  }, [fetchTransactions, fetchCategories, fetchSubCategories])
 
   const handleSubmit = async (data: TransactionFormData) => {
     if (editTarget) {
@@ -53,6 +59,10 @@ export default function TransactionsPage() {
     fetchTransactions({ page })
   }
 
+  const filteredSubCategories = filters.categoryId
+    ? subCategories.filter((s) => s.categoryId === filters.categoryId)
+    : subCategories
+
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -62,7 +72,7 @@ export default function TransactionsPage() {
         </Button>
       </Box>
 
-      <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+      <Stack direction="row" spacing={2} sx={{ mb: 2, flexWrap: 'wrap' }}>
         <FormControl size="small" sx={{ minWidth: 140 }}>
           <InputLabel>{t('transactions.filterType')}</InputLabel>
           <Select
@@ -71,8 +81,8 @@ export default function TransactionsPage() {
             onChange={(e) => {
               const val = e.target.value as 'INCOME' | 'EXPENSE' | 'ALL'
               const type = val === 'ALL' ? undefined : val
-              setFilters({ type, page: 1 })
-              fetchTransactions({ type, page: 1 })
+              setFilters({ type, page: 1, categoryId: undefined, subCategoryId: undefined })
+              fetchTransactions({ type, page: 1, categoryId: undefined, subCategoryId: undefined })
             }}
           >
             <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
@@ -80,6 +90,48 @@ export default function TransactionsPage() {
             <MenuItem value="EXPENSE">{t('transactions.expense')}</MenuItem>
           </Select>
         </FormControl>
+
+        <FormControl size="small" sx={{ minWidth: 160 }}>
+          <InputLabel>{t('transactions.filterCategory')}</InputLabel>
+          <Select
+            label={t('transactions.filterCategory')}
+            value={filters.categoryId ?? 'ALL'}
+            onChange={(e) => {
+              const val = e.target.value
+              const categoryId = val === 'ALL' ? undefined : Number(val)
+              setFilters({ categoryId, page: 1, subCategoryId: undefined })
+              fetchTransactions({ categoryId, page: 1, subCategoryId: undefined })
+            }}
+          >
+            <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
+            {categories
+              .filter((c) => !filters.type || c.type === filters.type)
+              .map((cat) => (
+                <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
+              ))}
+          </Select>
+        </FormControl>
+
+        {filteredSubCategories.length > 0 && (
+          <FormControl size="small" sx={{ minWidth: 180 }}>
+            <InputLabel>{t('transactions.filterSubCategory')}</InputLabel>
+            <Select
+              label={t('transactions.filterSubCategory')}
+              value={filters.subCategoryId ?? 'ALL'}
+              onChange={(e) => {
+                const val = e.target.value
+                const subCategoryId = val === 'ALL' ? undefined : Number(val)
+                setFilters({ subCategoryId, page: 1 })
+                fetchTransactions({ subCategoryId, page: 1 })
+              }}
+            >
+              <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
+              {filteredSubCategories.map((sub) => (
+                <MenuItem key={sub.id} value={sub.id}>{sub.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
       </Stack>
 
       <Card>
@@ -108,7 +160,14 @@ export default function TransactionsPage() {
                 transactions.map((tx) => (
                   <TableRow key={tx.id} hover>
                     <TableCell>{dayjs(tx.date).format('DD/MM/YYYY')}</TableCell>
-                    <TableCell><CategoryBadge category={tx.category} /></TableCell>
+                    <TableCell>
+                      <CategoryBadge category={tx.category} />
+                      {tx.subCategory && (
+                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.25 }}>
+                          · {tx.subCategory.name}
+                        </Typography>
+                      )}
+                    </TableCell>
                     <TableCell>{tx.description || '—'}</TableCell>
                     <TableCell>
                       <Chip

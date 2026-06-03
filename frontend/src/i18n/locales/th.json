@@ -19,6 +19,8 @@
     "title": "รายการ",
     "addTransaction": "เพิ่มรายการ",
     "filterType": "ประเภท",
+    "filterCategory": "หมวดหมู่",
+    "filterSubCategory": "หมวดหมู่ย่อย",
     "all": "ทั้งหมด",
     "income": "รายรับ",
     "expense": "รายจ่าย",
@@ -46,6 +48,19 @@
     "tooltipEdit": "แก้ไข",
     "tooltipDelete": "ลบ"
   },
+  "subcategories": {
+    "title": "หมวดหมู่ย่อย",
+    "add": "เพิ่ม",
+    "manage": "จัดการหมวดหมู่ย่อย",
+    "count": "{{count}} หมวดหมู่ย่อย",
+    "empty": "ยังไม่มีหมวดหมู่ย่อย",
+    "addSubCategory": "เพิ่มหมวดหมู่ย่อย",
+    "editSubCategory": "แก้ไขหมวดหมู่ย่อย",
+    "deleteTitle": "ลบหมวดหมู่ย่อย",
+    "deleteMessage": "ลบ \"{{name}}\"?",
+    "expand": "แสดงหมวดหมู่ย่อย",
+    "collapse": "ซ่อนหมวดหมู่ย่อย"
+  },
   "reports": {
     "title": "รายงาน",
     "yearLabel": "ปี",
@@ -57,7 +72,8 @@
     "noExpenseData": "ไม่มีข้อมูลรายจ่าย",
     "noIncomeData": "ไม่มีข้อมูลรายรับ",
     "seriesIncome": "รายรับ",
-    "seriesExpense": "รายจ่าย"
+    "seriesExpense": "รายจ่าย",
+    "categoryCount": "{{count}} รายการ"
   },
   "forms": {
     "addTransaction": "เพิ่มรายการ",
@@ -67,6 +83,8 @@
     "type": "ประเภท",
     "amount": "จำนวน (บาท)",
     "category": "หมวดหมู่",
+    "subCategoryOptional": "หมวดหมู่ย่อย (ไม่บังคับ)",
+    "subCategoryNone": "— ไม่ระบุ —",
     "date": "วันที่",
     "description": "รายละเอียด (ไม่บังคับ)",
     "name": "ชื่อ",
@@ -92,7 +110,11 @@
     "failedLoadCategories": "โหลดหมวดหมู่ไม่สำเร็จ",
     "categoryCreated": "สร้างหมวดหมู่สำเร็จ",
     "categoryUpdated": "อัปเดตหมวดหมู่สำเร็จ",
-    "categoryDeleted": "ลบหมวดหมู่สำเร็จ"
+    "categoryDeleted": "ลบหมวดหมู่สำเร็จ",
+    "failedLoadSubCategories": "โหลดหมวดหมู่ย่อยไม่สำเร็จ",
+    "subCategoryCreated": "สร้างหมวดหมู่ย่อยสำเร็จ",
+    "subCategoryUpdated": "อัปเดตหมวดหมู่ย่อยสำเร็จ",
+    "subCategoryDeleted": "ลบหมวดหมู่ย่อยสำเร็จ"
   },
   "language": {
     "toggle": "English"

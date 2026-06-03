@@ -19,7 +19,14 @@ export class CreateTransactionDto {
 
   @ApiProperty({ example: 1 })
   @IsInt()
+  @IsPositive()
   categoryId: number;
+
+  @ApiPropertyOptional({ example: 2 })
+  @IsOptional()
+  @IsInt()
+  @IsPositive()
+  subCategoryId?: number;
 
   @ApiPropertyOptional({ example: 'Monthly salary' })
   @IsOptional()

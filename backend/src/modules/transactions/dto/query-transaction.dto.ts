@@ -1,4 +1,5 @@
 import { IsEnum, IsISO8601, IsInt, IsOptional, Min, Max } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { TransactionType } from '@prisma/client';
 
@@ -10,8 +11,15 @@ export class QueryTransactionDto {
 
   @ApiPropertyOptional({ example: 1 })
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   categoryId?: number;
+
+  @ApiPropertyOptional({ example: 2 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  subCategoryId?: number;
 
   @ApiPropertyOptional({ example: '2026-01-01T00:00:00.000Z' })
   @IsOptional()

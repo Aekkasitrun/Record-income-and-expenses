@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -8,7 +8,9 @@ import {
 import { useTranslation } from 'react-i18next'
 import { transactionSchema, type TransactionFormData } from '@/schemas/transactionSchema'
 import { useCategoryStore } from '@/stores/categoryStore'
+import { subCategoryService } from '@/services/subCategoryService'
 import type { Transaction } from '@/types/transaction'
+import type { SubCategory } from '@/types/category'
 import { ICON_MAP } from '@/utils/iconMap'
 import dayjs from 'dayjs'
 
@@ -21,20 +23,23 @@ interface TransactionFormProps {
 
 export function TransactionForm({ open, onClose, onSubmit, initialData }: TransactionFormProps) {
   const { categories, fetchCategories } = useCategoryStore()
+  const [subCategories, setSubCategories] = useState<SubCategory[]>([])
   const { t } = useTranslation()
 
-  const { control, handleSubmit, reset, watch, formState: { errors, isSubmitting } } = useForm<TransactionFormData>({
+  const { control, handleSubmit, reset, watch, setValue, formState: { errors, isSubmitting } } = useForm<TransactionFormData>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
       amount: undefined,
       type: 'EXPENSE',
       date: dayjs().format('YYYY-MM-DD'),
       categoryId: undefined,
+      subCategoryId: undefined,
       description: '',
     },
   })
 
   const selectedType = watch('type')
+  const selectedCategoryId = watch('categoryId')
 
   useEffect(() => {
     fetchCategories()
@@ -48,12 +53,33 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
             type: initialData.type,
             date: dayjs(initialData.date).format('YYYY-MM-DD'),
             categoryId: initialData.categoryId,
+            subCategoryId: initialData.subCategoryId ?? undefined,
             description: initialData.description ?? '',
           }
-        : { amount: undefined, type: 'EXPENSE', date: dayjs().format('YYYY-MM-DD'), categoryId: undefined, description: '' }
+        : {
+            amount: undefined,
+            type: 'EXPENSE',
+            date: dayjs().format('YYYY-MM-DD'),
+            categoryId: undefined,
+            subCategoryId: undefined,
+            description: '',
+          }
       )
+      setSubCategories([])
     }
   }, [open, initialData, reset])
+
+  useEffect(() => {
+    if (!selectedCategoryId) {
+      setSubCategories([])
+      setValue('subCategoryId', undefined)
+      return
+    }
+    subCategoryService.getAll(selectedCategoryId).then((subs) => {
+      setSubCategories(subs)
+      if (subs.length === 0) setValue('subCategoryId', undefined)
+    })
+  }, [selectedCategoryId, setValue])
 
   const filteredCategories = categories.filter((c) => c.type === selectedType)
 
@@ -107,7 +133,15 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
             render={({ field }) => (
               <FormControl fullWidth error={!!errors.categoryId}>
                 <InputLabel>{t('forms.category')}</InputLabel>
-                <Select {...field} label={t('forms.category')} value={field.value ?? ''} onChange={(e) => field.onChange(Number(e.target.value))}>
+                <Select
+                  {...field}
+                  label={t('forms.category')}
+                  value={field.value ?? ''}
+                  onChange={(e) => {
+                    field.onChange(Number(e.target.value))
+                    setValue('subCategoryId', undefined)
+                  }}
+                >
                   {filteredCategories.map((cat) => {
                     const IconComponent = ICON_MAP[cat.icon] ?? ICON_MAP['category']!
                     return (
@@ -124,6 +158,32 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
               </FormControl>
             )}
           />
+
+          {subCategories.length > 0 && (
+            <Controller
+              name="subCategoryId"
+              control={control}
+              render={({ field }) => (
+                <FormControl fullWidth>
+                  <InputLabel>{t('forms.subCategoryOptional')}</InputLabel>
+                  <Select
+                    {...field}
+                    label={t('forms.subCategoryOptional')}
+                    value={field.value ?? ''}
+                    onChange={(e) => {
+                      const v = e.target.value as string | number
+                      field.onChange(v === '' ? undefined : Number(v))
+                    }}
+                  >
+                    <MenuItem value="">{t('forms.subCategoryNone')}</MenuItem>
+                    {subCategories.map((sub) => (
+                      <MenuItem key={sub.id} value={sub.id}>{sub.name}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+            />
+          )}
 
           <Controller
             name="date"

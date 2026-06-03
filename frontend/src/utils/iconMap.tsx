@@ -10,6 +10,7 @@ import ReceiptIcon from '@mui/icons-material/Receipt'
 import MovieIcon from '@mui/icons-material/Movie'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import SchoolIcon from '@mui/icons-material/School'
+import LocalCafeIcon from '@mui/icons-material/LocalCafe';
 import type { SvgIconComponent } from '@mui/icons-material'
 
 export const ICON_MAP: Record<string, SvgIconComponent> = {
@@ -19,6 +20,7 @@ export const ICON_MAP: Record<string, SvgIconComponent> = {
   trending_up: TrendingUpIcon,
   attach_money: AttachMoneyIcon,
   restaurant: RestaurantIcon,
+  local_cafe: LocalCafeIcon,
   directions_car: DirectionsCarIcon,
   shopping_cart: ShoppingCartIcon,
   receipt: ReceiptIcon,

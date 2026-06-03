@@ -19,6 +19,8 @@
     "title": "Transactions",
     "addTransaction": "Add Transaction",
     "filterType": "Type",
+    "filterCategory": "Category",
+    "filterSubCategory": "Sub-category",
     "all": "All",
     "income": "Income",
     "expense": "Expense",
@@ -46,6 +48,19 @@
     "tooltipEdit": "Edit",
     "tooltipDelete": "Delete"
   },
+  "subcategories": {
+    "title": "Sub-categories",
+    "add": "Add",
+    "manage": "Manage sub-categories",
+    "count": "{{count}} sub-categories",
+    "empty": "No sub-categories yet",
+    "addSubCategory": "Add Sub-category",
+    "editSubCategory": "Edit Sub-category",
+    "deleteTitle": "Delete Sub-category",
+    "deleteMessage": "Delete \"{{name}}\"?",
+    "expand": "Show sub-categories",
+    "collapse": "Hide sub-categories"
+  },
   "reports": {
     "title": "Reports",
     "yearLabel": "Year",
@@ -57,7 +72,8 @@
     "noExpenseData": "No expense data",
     "noIncomeData": "No income data",
     "seriesIncome": "Income",
-    "seriesExpense": "Expense"
+    "seriesExpense": "Expense",
+    "categoryCount": "{{count}} transactions"
   },
   "forms": {
     "addTransaction": "Add Transaction",
@@ -67,6 +83,8 @@
     "type": "Type",
     "amount": "Amount (THB)",
     "category": "Category",
+    "subCategoryOptional": "Sub-category (optional)",
+    "subCategoryNone": "— None —",
     "date": "Date",
     "description": "Description (optional)",
     "name": "Name",
@@ -92,7 +110,11 @@
     "failedLoadCategories": "Failed to load categories",
     "categoryCreated": "Category created",
     "categoryUpdated": "Category updated",
-    "categoryDeleted": "Category deleted"
+    "categoryDeleted": "Category deleted",
+    "failedLoadSubCategories": "Failed to load sub-categories",
+    "subCategoryCreated": "Sub-category created",
+    "subCategoryUpdated": "Sub-category updated",
+    "subCategoryDeleted": "Sub-category deleted"
   },
   "language": {
     "toggle": "ภาษาไทย"

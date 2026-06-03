@@ -8,6 +8,7 @@ export const transactionSchema = z.object({
   type: z.enum(['INCOME', 'EXPENSE']),
   date: z.string().min(1, 'Date is required'),
   categoryId: z.number({ error: 'Category is required' }).int().positive(),
+  subCategoryId: z.number().int().positive().optional(),
   description: z.string().max(500).optional(),
 })
 

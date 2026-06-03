@@ -79,25 +79,51 @@ export class ReportsService {
         : {}),
     };
 
-    const grouped = await this.prisma.transaction.groupBy({
-      by: ['categoryId'],
-      where,
-      _sum: { amount: true },
-      _count: { id: true },
-      orderBy: { _sum: { amount: 'desc' } },
-    });
+    const [grouped, subGrouped] = await Promise.all([
+      this.prisma.transaction.groupBy({
+        by: ['categoryId'],
+        where,
+        _sum: { amount: true },
+        _count: { id: true },
+        orderBy: { _sum: { amount: 'desc' } },
+      }),
+      this.prisma.transaction.groupBy({
+        by: ['categoryId', 'subCategoryId'],
+        where: { ...where, subCategoryId: { not: null } },
+        _sum: { amount: true },
+        _count: { id: true },
+      }),
+    ]);
 
     const categoryIds = grouped.map((g) => g.categoryId);
-    const categories = await this.prisma.category.findMany({
-      where: { id: { in: categoryIds } },
-    });
+    const subCategoryIds = subGrouped
+      .map((g) => g.subCategoryId)
+      .filter((id): id is number => id !== null);
+
+    const [categories, subCategories] = await Promise.all([
+      this.prisma.category.findMany({ where: { id: { in: categoryIds } } }),
+      this.prisma.subCategory.findMany({ where: { id: { in: subCategoryIds } } }),
+    ]);
 
     const catMap = new Map(categories.map((c) => [c.id, c]));
+    const subCatMap = new Map(subCategories.map((s) => [s.id, s]));
 
-    return grouped.map((g) => ({
-      category: catMap.get(g.categoryId),
-      total: Number(g._sum.amount ?? 0),
-      count: g._count.id,
-    }));
+    return grouped.map((g) => {
+      const subs = subGrouped
+        .filter((sg) => sg.categoryId === g.categoryId && sg.subCategoryId !== null)
+        .map((sg) => ({
+          subCategory: subCatMap.get(sg.subCategoryId!),
+          total: Number(sg._sum.amount ?? 0),
+          count: sg._count.id,
+        }))
+        .sort((a, b) => b.total - a.total);
+
+      return {
+        category: catMap.get(g.categoryId),
+        total: Number(g._sum.amount ?? 0),
+        count: g._count.id,
+        subCategories: subs,
+      };
+    });
   }
 }

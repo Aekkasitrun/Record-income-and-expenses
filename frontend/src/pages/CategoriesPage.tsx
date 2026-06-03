@@ -6,8 +6,8 @@ import {
 import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import Icon from '@mui/material/Icon'
 import { useTranslation } from 'react-i18next'
+import { ICON_MAP } from '@/utils/iconMap'
 import { useCategoryStore } from '@/stores/categoryStore'
 import { CategoryForm } from '@/components/forms/CategoryForm'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
@@ -58,13 +58,15 @@ export default function CategoriesPage() {
         {title}
       </Typography>
       <Grid container spacing={2}>
-        {items.map((cat) => (
+        {items.map((cat) => {
+          const IconComponent = ICON_MAP[cat.icon] ?? ICON_MAP['category']!
+          return (
           <Grid key={cat.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
             <Card>
               <CardContent sx={{ pb: 1 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                   <Box sx={{ width: 36, height: 36, borderRadius: '50%', backgroundColor: cat.color + '22', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Icon sx={{ color: cat.color }}>{cat.icon}</Icon>
+                    <IconComponent sx={{ color: cat.color }} />
                   </Box>
                   <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>{cat.name}</Typography>
                 </Box>
@@ -76,7 +78,8 @@ export default function CategoriesPage() {
               </CardActions>
             </Card>
           </Grid>
-        ))}
+          )
+        })}
       </Grid>
     </Box>
   )

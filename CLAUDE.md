@@ -36,14 +36,16 @@ Record-income-and-expenses/
 ├── frontend/                    ← React SPA
 │   ├── src/
 │   │   ├── components/layout/   ← AppLayout, Sidebar
-│   │   ├── components/ui/       ← StatCard, AmountChip, CategoryBadge, ConfirmDialog
+│   │   ├── components/ui/       ← StatCard, AmountChip, CategoryBadge, ConfirmDialog, LanguageToggle, ThemeModeToggle
 │   │   ├── components/forms/    ← TransactionForm, CategoryForm
 │   │   ├── pages/               ← Dashboard, Transactions, Categories, Reports
 │   │   ├── stores/              ← Zustand: transactionStore, categoryStore, uiStore
 │   │   ├── services/            ← axios: api.ts, transactionService, categoryService, reportService
 │   │   ├── types/               ← TypeScript: transaction.ts, category.ts, report.ts
 │   │   ├── schemas/             ← Zod: transactionSchema, categorySchema
-│   │   └── theme/theme.ts       ← MUI v7 custom theme
+│   │   ├── i18n/                ← react-i18next config + locales/en.json, locales/th.json
+│   │   ├── utils/locale.ts      ← formatCurrency, formatCurrencyCompact (locale-aware)
+│   │   └── theme/theme.ts       ← MUI v7 custom theme (createAppTheme(mode))
 │   └── Dockerfile
 └── backend/                     ← NestJS API
     ├── src/
@@ -110,6 +112,69 @@ User Request
 ---
 
 ## Code Standards
+
+### i18n (Bilingual TH/EN) — Required for all new UI text
+
+The app supports Thai (default) and English via `react-i18next`.
+
+**Rule: every hardcoded user-facing string MUST have a translation key.**
+
+```
+src/i18n/locales/en.json   ← English strings
+src/i18n/locales/th.json   ← Thai strings
+```
+
+Key structure:
+```
+nav.*           — App name, nav labels
+dashboard.*     — Dashboard page
+transactions.*  — Transactions page
+categories.*    — Categories page
+reports.*       — Reports page
+forms.*         — Shared form labels & buttons
+ui.*            — Generic: cancel, confirm
+store.*         — Snackbar messages from Zustand stores
+language.*      — Language toggle label
+```
+
+**In components** — use the `useTranslation` hook:
+```tsx
+const { t } = useTranslation()
+<Typography>{t('dashboard.title')}</Typography>
+```
+
+**In Zustand stores** — import i18n singleton directly (no hook):
+```typescript
+import i18n from '@/i18n/index'
+useUiStore.getState().showSnackbar(i18n.t('store.transactionAdded'), 'success')
+```
+
+**Currency formatting** — always use `@/utils/locale` (adapts to active locale, never hardcode `'th-TH'`):
+```typescript
+import { formatCurrency, formatCurrencyCompact } from '@/utils/locale'
+```
+
+**dayjs** — locale is set automatically in `@/i18n/index.ts` on init and on language change. Use `dayjs` as normal; month names will appear in the correct language.
+
+**Checklist when adding a new page or feature:**
+- [ ] Add all new strings to `en.json` AND `th.json`
+- [ ] Use `t('key')` in components, `i18n.t('key')` in stores
+- [ ] Use `formatCurrency` from `@/utils/locale`, not `Intl.NumberFormat` directly
+
+---
+
+### Dark / Light Mode
+
+Theme is created via `createAppTheme(mode)` in `src/theme/theme.ts`.
+- Light: primary `#003C71`, background `#FFFFFF`
+- Dark: primary `#009CDE`, background `#0a1929` (navy-dark), paper `#132f4c`
+
+Mode is toggled via `useUiStore().toggleThemeMode()` and persisted in `localStorage`.
+`App.tsx` calls `useMemo(() => createAppTheme(themeMode), [themeMode])`.
+
+**When adding new components**, rely on MUI's `palette.mode` and semantic tokens (`background.default`, `background.paper`, `text.primary`) — avoid hardcoding hex colors that only work in one mode.
+
+---
 
 ### TypeScript
 - `strict: true` in all tsconfig files

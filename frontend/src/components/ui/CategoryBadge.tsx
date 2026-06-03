@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material'
-import Icon from '@mui/material/Icon'
 import type { Category } from '@/types/category'
+import { ICON_MAP } from '@/utils/iconMap'
 
 interface CategoryBadgeProps {
   category: Category
@@ -8,6 +8,7 @@ interface CategoryBadgeProps {
 }
 
 export function CategoryBadge({ category, showLabel = true }: CategoryBadgeProps) {
+  const IconComponent = ICON_MAP[category.icon] ?? ICON_MAP['category']!
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
       <Box
@@ -21,7 +22,7 @@ export function CategoryBadge({ category, showLabel = true }: CategoryBadgeProps
           justifyContent: 'center',
         }}
       >
-        <Icon sx={{ fontSize: 16, color: category.color }}>{category.icon}</Icon>
+        <IconComponent sx={{ fontSize: 16, color: category.color }} />
       </Box>
       {showLabel && (
         <Typography variant="body2" noWrap>

@@ -8,6 +8,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { categorySchema, type CategoryFormData } from '@/schemas/categorySchema'
 import type { Category } from '@/types/category'
+import { ICON_MAP, MUI_ICONS } from '@/utils/iconMap'
 
 interface CategoryFormProps {
   open: boolean
@@ -16,7 +17,6 @@ interface CategoryFormProps {
   initialData?: Category
 }
 
-const MUI_ICONS = ['category', 'work', 'laptop', 'trending_up', 'attach_money', 'restaurant', 'directions_car', 'shopping_cart', 'receipt', 'movie', 'favorite', 'school']
 
 export function CategoryForm({ open, onClose, onSubmit, initialData }: CategoryFormProps) {
   const { t } = useTranslation()
@@ -74,9 +74,15 @@ export function CategoryForm({ open, onClose, onSubmit, initialData }: CategoryF
               <FormControl fullWidth>
                 <InputLabel>{t('forms.icon')}</InputLabel>
                 <Select {...field} label={t('forms.icon')}>
-                  {MUI_ICONS.map((icon) => (
-                    <MenuItem key={icon} value={icon}>{icon}</MenuItem>
-                  ))}
+                  {MUI_ICONS.map((icon) => {
+                    const IconComponent = ICON_MAP[icon]!
+                    return (
+                      <MenuItem key={icon} value={icon} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <IconComponent fontSize="small" />
+                        {icon}
+                      </MenuItem>
+                    )
+                  })}
                 </Select>
               </FormControl>
             )}

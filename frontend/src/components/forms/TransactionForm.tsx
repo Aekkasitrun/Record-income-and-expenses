@@ -3,12 +3,13 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField,
-  FormControl, InputLabel, Select, MenuItem, FormHelperText, Stack,
+  FormControl, InputLabel, Select, MenuItem, FormHelperText, Stack, Box,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { transactionSchema, type TransactionFormData } from '@/schemas/transactionSchema'
 import { useCategoryStore } from '@/stores/categoryStore'
 import type { Transaction } from '@/types/transaction'
+import { ICON_MAP } from '@/utils/iconMap'
 import dayjs from 'dayjs'
 
 interface TransactionFormProps {
@@ -107,9 +108,17 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
               <FormControl fullWidth error={!!errors.categoryId}>
                 <InputLabel>{t('forms.category')}</InputLabel>
                 <Select {...field} label={t('forms.category')} value={field.value ?? ''} onChange={(e) => field.onChange(Number(e.target.value))}>
-                  {filteredCategories.map((cat) => (
-                    <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
-                  ))}
+                  {filteredCategories.map((cat) => {
+                    const IconComponent = ICON_MAP[cat.icon] ?? ICON_MAP['category']!
+                    return (
+                      <MenuItem key={cat.id} value={cat.id} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Box sx={{ width: 24, height: 24, borderRadius: '50%', backgroundColor: cat.color + '22', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          <IconComponent sx={{ fontSize: 14, color: cat.color }} />
+                        </Box>
+                        {cat.name}
+                      </MenuItem>
+                    )
+                  })}
                 </Select>
                 {errors.categoryId && <FormHelperText>{errors.categoryId.message}</FormHelperText>}
               </FormControl>

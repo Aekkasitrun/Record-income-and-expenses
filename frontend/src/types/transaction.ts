@@ -44,7 +44,7 @@ export interface CreateTransactionPayload {
   type: TransactionType
   date: string
   categoryId: number
-  subCategoryId?: number
+  subCategoryId?: number | null
   description?: string
 }
 

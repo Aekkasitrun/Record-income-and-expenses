@@ -91,6 +91,7 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
     await onSubmit({
       ...data,
       date: new Date(data.date).toISOString(),
+      subCategoryId: data.subCategoryId ?? null,
     })
     onClose()
   }
@@ -145,6 +146,7 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
                   onChange={(e) => {
                     field.onChange(Number(e.target.value))
                     setValue('subCategoryId', undefined)
+                    setSubCategories([])
                   }}
                 >
                   {filteredCategories.map((cat) => {

@@ -22,6 +22,8 @@
     "filterType": "ประเภท",
     "filterCategory": "หมวดหมู่",
     "filterSubCategory": "หมวดหมู่ย่อย",
+    "filterStartDate": "วันที่เริ่มต้น",
+    "filterEndDate": "วันที่สิ้นสุด",
     "all": "ทั้งหมด",
     "income": "รายรับ",
     "expense": "รายจ่าย",

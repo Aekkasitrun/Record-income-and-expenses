@@ -22,6 +22,8 @@
     "filterType": "Type",
     "filterCategory": "Category",
     "filterSubCategory": "Sub-category",
+    "filterStartDate": "Start Date",
+    "filterEndDate": "End Date",
     "all": "All",
     "income": "Income",
     "expense": "Expense",

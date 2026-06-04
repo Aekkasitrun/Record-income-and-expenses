@@ -7,6 +7,10 @@ import {
 import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import type { Dayjs } from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import { useTransactionStore } from '@/stores/transactionStore'
 import { useCategoryStore } from '@/stores/categoryStore'
@@ -26,6 +30,8 @@ export default function TransactionsPage() {
   const [formOpen, setFormOpen] = useState(false)
   const [editTarget, setEditTarget] = useState<Transaction | undefined>()
   const [deleteTarget, setDeleteTarget] = useState<Transaction | undefined>()
+  const [startDate, setStartDate] = useState<Dayjs | null>(null)
+  const [endDate, setEndDate] = useState<Dayjs | null>(null)
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -59,6 +65,19 @@ export default function TransactionsPage() {
     fetchTransactions({ page })
   }
 
+  const handleDateChange = (field: 'startDate' | 'endDate', val: Dayjs | null) => {
+    if (field === 'startDate') setStartDate(val)
+    else setEndDate(val)
+    const startIso = field === 'startDate'
+      ? (val ? val.startOf('day').toISOString() : undefined)
+      : (startDate ? startDate.startOf('day').toISOString() : undefined)
+    const endIso = field === 'endDate'
+      ? (val ? val.endOf('day').toISOString() : undefined)
+      : (endDate ? endDate.endOf('day').toISOString() : undefined)
+    setFilters({ startDate: startIso, endDate: endIso, page: 1 })
+    fetchTransactions({ startDate: startIso, endDate: endIso, page: 1 })
+  }
+
   const filteredSubCategories = filters.categoryId
     ? subCategories.filter((s) => s.categoryId === filters.categoryId)
     : subCategories
@@ -72,68 +91,83 @@ export default function TransactionsPage() {
         </Button>
       </Box>
 
-      <Stack direction="row" spacing={2} sx={{ mb: 2, flexWrap: 'wrap' }}>
-        <FormControl size="small" sx={{ minWidth: 140 }}>
-          <InputLabel>{t('transactions.filterType')}</InputLabel>
-          <Select
-            label={t('transactions.filterType')}
-            value={filters.type ?? 'ALL'}
-            onChange={(e) => {
-              const val = e.target.value as 'INCOME' | 'EXPENSE' | 'INVESTMENT' | 'ALL'
-              const type = val === 'ALL' ? undefined : val
-              setFilters({ type, page: 1, categoryId: undefined, subCategoryId: undefined })
-              fetchTransactions({ type, page: 1, categoryId: undefined, subCategoryId: undefined })
-            }}
-          >
-            <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
-            <MenuItem value="INCOME">{t('transactions.income')}</MenuItem>
-            <MenuItem value="EXPENSE">{t('transactions.expense')}</MenuItem>
-            <MenuItem value="INVESTMENT">{t('transactions.investment')}</MenuItem>
-          </Select>
-        </FormControl>
-
-        <FormControl size="small" sx={{ minWidth: 160 }}>
-          <InputLabel>{t('transactions.filterCategory')}</InputLabel>
-          <Select
-            label={t('transactions.filterCategory')}
-            value={filters.categoryId ?? 'ALL'}
-            onChange={(e) => {
-              const val = e.target.value
-              const categoryId = val === 'ALL' ? undefined : Number(val)
-              setFilters({ categoryId, page: 1, subCategoryId: undefined })
-              fetchTransactions({ categoryId, page: 1, subCategoryId: undefined })
-            }}
-          >
-            <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
-            {categories
-              .filter((c) => !filters.type || c.type === filters.type)
-              .map((cat) => (
-                <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
-              ))}
-          </Select>
-        </FormControl>
-
-        {filteredSubCategories.length > 0 && (
-          <FormControl size="small" sx={{ minWidth: 180 }}>
-            <InputLabel>{t('transactions.filterSubCategory')}</InputLabel>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Stack direction="row" spacing={2} sx={{ mb: 2, flexWrap: 'wrap' }}>
+          <FormControl size="small" sx={{ minWidth: 140 }}>
+            <InputLabel>{t('transactions.filterType')}</InputLabel>
             <Select
-              label={t('transactions.filterSubCategory')}
-              value={filters.subCategoryId ?? 'ALL'}
+              label={t('transactions.filterType')}
+              value={filters.type ?? 'ALL'}
               onChange={(e) => {
-                const val = e.target.value
-                const subCategoryId = val === 'ALL' ? undefined : Number(val)
-                setFilters({ subCategoryId, page: 1 })
-                fetchTransactions({ subCategoryId, page: 1 })
+                const val = e.target.value as 'INCOME' | 'EXPENSE' | 'INVESTMENT' | 'ALL'
+                const type = val === 'ALL' ? undefined : val
+                setFilters({ type, page: 1, categoryId: undefined, subCategoryId: undefined })
+                fetchTransactions({ type, page: 1, categoryId: undefined, subCategoryId: undefined })
               }}
             >
               <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
-              {filteredSubCategories.map((sub) => (
-                <MenuItem key={sub.id} value={sub.id}>{sub.name}</MenuItem>
-              ))}
+              <MenuItem value="INCOME">{t('transactions.income')}</MenuItem>
+              <MenuItem value="EXPENSE">{t('transactions.expense')}</MenuItem>
+              <MenuItem value="INVESTMENT">{t('transactions.investment')}</MenuItem>
             </Select>
           </FormControl>
-        )}
-      </Stack>
+
+          <FormControl size="small" sx={{ minWidth: 160 }}>
+            <InputLabel>{t('transactions.filterCategory')}</InputLabel>
+            <Select
+              label={t('transactions.filterCategory')}
+              value={filters.categoryId ?? 'ALL'}
+              onChange={(e) => {
+                const val = e.target.value
+                const categoryId = val === 'ALL' ? undefined : Number(val)
+                setFilters({ categoryId, page: 1, subCategoryId: undefined })
+                fetchTransactions({ categoryId, page: 1, subCategoryId: undefined })
+              }}
+            >
+              <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
+              {categories
+                .filter((c) => !filters.type || c.type === filters.type)
+                .map((cat) => (
+                  <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
+                ))}
+            </Select>
+          </FormControl>
+
+          {filteredSubCategories.length > 0 && (
+            <FormControl size="small" sx={{ minWidth: 180 }}>
+              <InputLabel>{t('transactions.filterSubCategory')}</InputLabel>
+              <Select
+                label={t('transactions.filterSubCategory')}
+                value={filters.subCategoryId ?? 'ALL'}
+                onChange={(e) => {
+                  const val = e.target.value
+                  const subCategoryId = val === 'ALL' ? undefined : Number(val)
+                  setFilters({ subCategoryId, page: 1 })
+                  fetchTransactions({ subCategoryId, page: 1 })
+                }}
+              >
+                <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
+                {filteredSubCategories.map((sub) => (
+                  <MenuItem key={sub.id} value={sub.id}>{sub.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+
+          <DatePicker
+            label={t('transactions.filterStartDate')}
+            value={startDate}
+            onChange={(val) => handleDateChange('startDate', val)}
+            slotProps={{ textField: { size: 'small' } }}
+          />
+          <DatePicker
+            label={t('transactions.filterEndDate')}
+            value={endDate}
+            onChange={(val) => handleDateChange('endDate', val)}
+            slotProps={{ textField: { size: 'small' } }}
+          />
+        </Stack>
+      </LocalizationProvider>
 
       <Card>
         {isLoading ? (

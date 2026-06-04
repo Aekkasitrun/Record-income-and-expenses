@@ -3,8 +3,14 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField,
-  FormControl, InputLabel, Select, MenuItem, FormHelperText, Stack, Box,
+  FormControl, FormLabel, InputLabel, Select, MenuItem, FormHelperText,
+  RadioGroup, Radio, FormControlLabel, Stack, Box, IconButton, Tooltip,
 } from '@mui/material'
+import StarIcon from '@mui/icons-material/Star'
+import StarBorderIcon from '@mui/icons-material/StarBorder'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { useTranslation } from 'react-i18next'
 import { transactionSchema, type TransactionFormData } from '@/schemas/transactionSchema'
 import { useCategoryStore } from '@/stores/categoryStore'
@@ -25,7 +31,7 @@ interface TransactionFormProps {
 }
 
 export function TransactionForm({ open, onClose, onSubmit, initialData }: TransactionFormProps) {
-  const { categories, fetchCategories } = useCategoryStore()
+  const { categories, fetchCategories, toggleFavourite } = useCategoryStore()
   const [subCategories, setSubCategories] = useState<SubCategory[]>([])
   const { t } = useTranslation()
 
@@ -84,7 +90,12 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
     })
   }, [selectedCategoryId, setValue])
 
-  const filteredCategories = categories.filter((c) => c.type === selectedType)
+  const filteredCategories = categories
+    .filter((c) => c.type === selectedType)
+    .sort((a, b) => {
+      if (a.isFavourite === b.isFavourite) return a.name.localeCompare(b.name)
+      return a.isFavourite ? -1 : 1
+    })
 
   const handleFormSubmit = async (data: TransactionFormData) => {
     localStorage.setItem(LAST_DATE_KEY, data.date)
@@ -106,12 +117,12 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
             control={control}
             render={({ field }) => (
               <FormControl fullWidth error={!!errors.type}>
-                <InputLabel>{t('forms.type')}</InputLabel>
-                <Select {...field} label={t('forms.type')}>
-                  <MenuItem value="INCOME">{t('forms.income')}</MenuItem>
-                  <MenuItem value="EXPENSE">{t('forms.expense')}</MenuItem>
-                  <MenuItem value="INVESTMENT">{t('forms.investment')}</MenuItem>
-                </Select>
+                <FormLabel>{t('forms.type')}</FormLabel>
+                <RadioGroup {...field} row>
+                  <FormControlLabel value="INCOME" control={<Radio />} label={t('forms.income')} />
+                  <FormControlLabel value="EXPENSE" control={<Radio />} label={t('forms.expense')} />
+                  <FormControlLabel value="INVESTMENT" control={<Radio />} label={t('forms.investment')} />
+                </RadioGroup>
                 {errors.type && <FormHelperText>{errors.type.message}</FormHelperText>}
               </FormControl>
             )}
@@ -152,11 +163,24 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
                   {filteredCategories.map((cat) => {
                     const IconComponent = ICON_MAP[cat.icon] ?? ICON_MAP['category']!
                     return (
-                      <MenuItem key={cat.id} value={cat.id} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <MenuItem key={cat.id} value={cat.id} sx={{ display: 'flex', alignItems: 'center', gap: 1, pr: 1 }}>
                         <Box sx={{ width: 24, height: 24, borderRadius: '50%', backgroundColor: cat.color + '22', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                           <IconComponent sx={{ fontSize: 14, color: cat.color }} />
                         </Box>
-                        {cat.name}
+                        <Box sx={{ flexGrow: 1 }}>{cat.name}</Box>
+                        <Tooltip title={cat.isFavourite ? t('categories.unfavourite') : t('categories.favourite')} arrow>
+                          <IconButton
+                            size="small"
+                            onClick={(e) => { e.stopPropagation(); toggleFavourite(cat.id) }}
+                            onMouseDown={(e) => e.stopPropagation()}
+                            aria-label={cat.isFavourite ? t('categories.unfavourite') : t('categories.favourite')}
+                            sx={{ flexShrink: 0 }}
+                          >
+                            {cat.isFavourite
+                              ? <StarIcon sx={{ fontSize: 18, color: 'warning.main' }} />
+                              : <StarBorderIcon sx={{ fontSize: 18, color: 'text.disabled' }} />}
+                          </IconButton>
+                        </Tooltip>
                       </MenuItem>
                     )
                   })}
@@ -196,14 +220,20 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
             name="date"
             control={control}
             render={({ field }) => (
-              <TextField
-                {...field}
-                label={t('forms.date')}
-                type="date"
-                error={!!errors.date}
-                helperText={errors.date?.message}
-                slotProps={{ inputLabel: { shrink: true } }}
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label={t('forms.date')}
+                  value={field.value ? dayjs(field.value) : null}
+                  onChange={(val) => field.onChange(val ? val.format('YYYY-MM-DD') : '')}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      error: !!errors.date,
+                      helperText: errors.date?.message,
+                    },
+                  }}
+                />
+              </LocalizationProvider>
             )}
           />
 

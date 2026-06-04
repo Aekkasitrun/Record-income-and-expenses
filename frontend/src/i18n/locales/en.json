@@ -51,7 +51,9 @@
     "deleteTitle": "Delete Category",
     "deleteMessage": "Delete \"{{name}}\"? This will fail if transactions use this category.",
     "tooltipEdit": "Edit",
-    "tooltipDelete": "Delete"
+    "tooltipDelete": "Delete",
+    "favourite": "Mark as favourite",
+    "unfavourite": "Remove from favourites"
   },
   "subcategories": {
     "title": "Sub-categories",
@@ -123,7 +125,8 @@
     "failedLoadSubCategories": "Failed to load sub-categories",
     "subCategoryCreated": "Sub-category created",
     "subCategoryUpdated": "Sub-category updated",
-    "subCategoryDeleted": "Sub-category deleted"
+    "subCategoryDeleted": "Sub-category deleted",
+    "categoryFavouriteError": "Failed to update favourite"
   },
   "language": {
     "toggle": "ภาษาไทย"

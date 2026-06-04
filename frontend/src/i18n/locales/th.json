@@ -51,7 +51,9 @@
     "deleteTitle": "ลบหมวดหมู่",
     "deleteMessage": "ลบ \"{{name}}\"? การลบจะล้มเหลวหากมีรายการที่ใช้หมวดหมู่นี้",
     "tooltipEdit": "แก้ไข",
-    "tooltipDelete": "ลบ"
+    "tooltipDelete": "ลบ",
+    "favourite": "ตั้งเป็นรายการโปรด",
+    "unfavourite": "ยกเลิกรายการโปรด"
   },
   "subcategories": {
     "title": "หมวดหมู่ย่อย",
@@ -123,7 +125,8 @@
     "failedLoadSubCategories": "โหลดหมวดหมู่ย่อยไม่สำเร็จ",
     "subCategoryCreated": "สร้างหมวดหมู่ย่อยสำเร็จ",
     "subCategoryUpdated": "อัปเดตหมวดหมู่ย่อยสำเร็จ",
-    "subCategoryDeleted": "ลบหมวดหมู่ย่อยสำเร็จ"
+    "subCategoryDeleted": "ลบหมวดหมู่ย่อยสำเร็จ",
+    "categoryFavouriteError": "อัปเดตรายการโปรดไม่สำเร็จ"
   },
   "language": {
     "toggle": "English"

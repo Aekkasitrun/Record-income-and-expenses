@@ -1,4 +1,4 @@
-import { IsEnum, IsHexColor, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsBoolean, IsEnum, IsHexColor, IsOptional, IsString, MaxLength } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { TransactionType } from '@prisma/client';
 
@@ -21,4 +21,9 @@ export class CreateCategoryDto {
   @IsOptional()
   @IsHexColor()
   color?: string;
+
+  @ApiPropertyOptional({ example: false })
+  @IsOptional()
+  @IsBoolean()
+  isFavourite?: boolean;
 }

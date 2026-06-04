@@ -7,6 +7,7 @@ export interface Category {
   icon: string
   color: string
   isDefault: boolean
+  isFavourite: boolean
   createdAt: string
   updatedAt: string
 }
@@ -26,7 +27,9 @@ export interface CreateCategoryPayload {
   color?: string
 }
 
-export interface UpdateCategoryPayload extends Partial<CreateCategoryPayload> {}
+export interface UpdateCategoryPayload extends Partial<CreateCategoryPayload> {
+  isFavourite?: boolean
+}
 
 export interface CreateSubCategoryPayload {
   name: string

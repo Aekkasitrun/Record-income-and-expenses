@@ -11,9 +11,10 @@ interface CategoryState {
   createCategory: (data: CreateCategoryPayload) => Promise<void>
   updateCategory: (id: number, data: UpdateCategoryPayload) => Promise<void>
   deleteCategory: (id: number) => Promise<void>
+  toggleFavourite: (id: number) => Promise<void>
 }
 
-export const useCategoryStore = create<CategoryState>()((set) => ({
+export const useCategoryStore = create<CategoryState>()((set, get) => ({
   categories: [],
   isLoading: false,
 
@@ -45,5 +46,23 @@ export const useCategoryStore = create<CategoryState>()((set) => ({
     await categoryService.remove(id)
     set((s) => ({ categories: s.categories.filter((c) => c.id !== id) }))
     useUiStore.getState().showSnackbar(i18n.t('store.categoryDeleted'), 'success')
+  },
+
+  toggleFavourite: async (id) => {
+    const current = get().categories.find((c) => c.id === id)
+    if (!current) return
+    const nextValue = !current.isFavourite
+    const sort = (arr: Category[]) =>
+      [...arr].sort((a, b) => {
+        if (a.isFavourite === b.isFavourite) return a.name.localeCompare(b.name)
+        return a.isFavourite ? -1 : 1
+      })
+    set((s) => ({ categories: sort(s.categories.map((c) => c.id === id ? { ...c, isFavourite: nextValue } : c)) }))
+    try {
+      await categoryService.update(id, { isFavourite: nextValue })
+    } catch {
+      set((s) => ({ categories: sort(s.categories.map((c) => c.id === id ? { ...c, isFavourite: current.isFavourite } : c)) }))
+      useUiStore.getState().showSnackbar(i18n.t('store.categoryFavouriteError'), 'error')
+    }
   },
 }))

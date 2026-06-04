@@ -11,7 +11,7 @@ export class CategoriesService {
   async findAll(type?: TransactionType) {
     return this.prisma.category.findMany({
       where: type ? { type } : undefined,
-      orderBy: [{ type: 'asc' }, { name: 'asc' }],
+      orderBy: [{ isFavourite: 'desc' }, { type: 'asc' }, { name: 'asc' }],
     });
   }
 

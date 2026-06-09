@@ -16,6 +16,9 @@ Single-user, no authentication. Thai Baht (THB) currency.
 ARCHITECTURE.md   ← system design, ER diagram, API routes, env vars
 CONVENTIONS.md    ← naming rules, commit format, import order, patterns
 ROADMAP.md        ← current phase, pending tasks, completion status
+DESIGN.md         ← brand colors, theme rules, component patterns
+DECISIONS.md      ← why we chose each technology (do not re-debate)
+GOTCHAS.md        ← known traps and non-obvious behaviors
 ```
 
 Do not skip this step even if you remember the project from a previous session. These files may have changed.
@@ -28,11 +31,14 @@ After completing any significant work, **proactively update the relevant files w
 
 | Change Made | Files to Update |
 |------------|----------------|
-| New feature implemented | `ROADMAP.md` (mark task done) + `CLAUDE.md` (Feature Modules if new module) |
+| New feature implemented | `ROADMAP.md` (mark task done) + `CHANGELOG.md` (Unreleased section) |
 | New database table or column | `ARCHITECTURE.md` (ER diagram + table list) |
 | New API endpoint added | `ARCHITECTURE.md` (API routes table) |
 | New environment variable | `ARCHITECTURE.md` (env vars table) + `.env.example` |
 | New naming rule established | `CONVENTIONS.md` |
+| New UI/theme decision | `DESIGN.md` (Updates table) |
+| New technology decision made | `DECISIONS.md` (add DECISION-NNN entry) |
+| Tricky bug fixed or non-obvious behavior found | `GOTCHAS.md` (add GOTCHA-NNN entry) |
 | New code pattern or architecture decision | `CLAUDE.md` (Code Standards section) |
 | Phase completed | `ROADMAP.md` (progress table + actual date) |
 | New module added | `CLAUDE.md` (Feature Modules) + `ARCHITECTURE.md` (Component Diagram) |
@@ -66,6 +72,10 @@ Record-income-and-expenses/
 ├── ARCHITECTURE.md              ← System design, ER diagram, API routes
 ├── CONVENTIONS.md               ← Naming rules, patterns, commit format
 ├── ROADMAP.md                   ← Feature phases and completion status
+├── DESIGN.md                    ← Brand colors, theme, component patterns
+├── DECISIONS.md                 ← Technology decision log (why we chose X)
+├── GOTCHAS.md                   ← Known traps and non-obvious behaviors
+├── CHANGELOG.md                 ← Completed work log (updated by Reporter)
 ├── docker-compose.yml           ← Production
 ├── docker-compose.dev.yml       ← Development (hot reload)
 ├── .env.example

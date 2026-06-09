@@ -39,7 +39,8 @@
     "deleteTitle": "ลบรายการ",
     "deleteMessage": "ลบ{{type}}จำนวน {{amount}} นี้?",
     "tooltipEdit": "แก้ไข",
-    "tooltipDelete": "ลบ"
+    "tooltipDelete": "ลบ",
+    "tooltipClone": "คัดลอก"
   },
   "categories": {
     "title": "หมวดหมู่",
@@ -106,7 +107,8 @@
     "cancel": "ยกเลิก",
     "saving": "กำลังบันทึก...",
     "update": "อัปเดต",
-    "add": "เพิ่ม"
+    "add": "เพิ่ม",
+    "addAnother": "เพิ่มรายการต่อ"
   },
   "ui": {
     "cancel": "ยกเลิก",

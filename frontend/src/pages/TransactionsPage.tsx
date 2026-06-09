@@ -7,6 +7,7 @@ import {
 import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -30,6 +31,7 @@ export default function TransactionsPage() {
   const [formOpen, setFormOpen] = useState(false)
   const [editTarget, setEditTarget] = useState<Transaction | undefined>()
   const [deleteTarget, setDeleteTarget] = useState<Transaction | undefined>()
+  const [cloneSource, setCloneSource] = useState<Partial<TransactionFormData> | undefined>()
   const [startDate, setStartDate] = useState<Dayjs | null>(null)
   const [endDate, setEndDate] = useState<Dayjs | null>(null)
   const { t } = useTranslation()
@@ -51,6 +53,18 @@ export default function TransactionsPage() {
 
   const handleEdit = (tx: Transaction) => {
     setEditTarget(tx)
+    setFormOpen(true)
+  }
+
+  const handleClone = (tx: Transaction) => {
+    setCloneSource({
+      type: tx.type,
+      amount: tx.amount,
+      categoryId: tx.categoryId,
+      subCategoryId: tx.subCategoryId ?? undefined,
+      description: tx.description ?? '',
+    })
+    setEditTarget(undefined)
     setFormOpen(true)
   }
 
@@ -220,6 +234,7 @@ export default function TransactionsPage() {
                       {tx.type === 'INCOME' ? '+' : '-'}{formatCurrency(tx.amount)}
                     </TableCell>
                     <TableCell align="center">
+                      <Tooltip title={t('transactions.tooltipClone')}><IconButton size="small" onClick={() => handleClone(tx)}><ContentCopyIcon fontSize="small" /></IconButton></Tooltip>
                       <Tooltip title={t('transactions.tooltipEdit')}><IconButton size="small" onClick={() => handleEdit(tx)}><EditIcon fontSize="small" /></IconButton></Tooltip>
                       <Tooltip title={t('transactions.tooltipDelete')}><IconButton size="small" color="error" onClick={() => setDeleteTarget(tx)}><DeleteIcon fontSize="small" /></IconButton></Tooltip>
                     </TableCell>
@@ -245,9 +260,10 @@ export default function TransactionsPage() {
 
       <TransactionForm
         open={formOpen}
-        onClose={() => { setFormOpen(false); setEditTarget(undefined) }}
+        onClose={() => { setFormOpen(false); setEditTarget(undefined); setCloneSource(undefined) }}
         onSubmit={handleSubmit}
         initialData={editTarget}
+        prefillData={cloneSource}
       />
 
       <ConfirmDialog

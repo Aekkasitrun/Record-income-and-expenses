@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField,
   FormControl, FormLabel, InputLabel, Select, MenuItem, FormHelperText,
-  RadioGroup, Radio, FormControlLabel, Stack, Box, IconButton, Tooltip,
+  RadioGroup, Radio, FormControlLabel, Stack, Box, IconButton, Tooltip, Checkbox,
 } from '@mui/material'
 import StarIcon from '@mui/icons-material/Star'
 import StarBorderIcon from '@mui/icons-material/StarBorder'
@@ -28,11 +28,13 @@ interface TransactionFormProps {
   onClose: () => void
   onSubmit: (data: TransactionFormData) => Promise<void>
   initialData?: Transaction
+  prefillData?: Partial<TransactionFormData>
 }
 
-export function TransactionForm({ open, onClose, onSubmit, initialData }: TransactionFormProps) {
+export function TransactionForm({ open, onClose, onSubmit, initialData, prefillData }: TransactionFormProps) {
   const { categories, fetchCategories, toggleFavourite } = useCategoryStore()
   const [subCategories, setSubCategories] = useState<SubCategory[]>([])
+  const [addAnother, setAddAnother] = useState(false)
   const { t } = useTranslation()
 
   const { control, handleSubmit, reset, watch, setValue, formState: { errors, isSubmitting } } = useForm<TransactionFormData>({
@@ -56,27 +58,37 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
 
   useEffect(() => {
     if (open) {
-      reset(initialData
-        ? {
-            amount: initialData.amount,
-            type: initialData.type,
-            date: dayjs(initialData.date).format('YYYY-MM-DD'),
-            categoryId: initialData.categoryId,
-            subCategoryId: initialData.subCategoryId ?? undefined,
-            description: initialData.description ?? '',
-          }
-        : {
-            amount: undefined,
-            type: 'EXPENSE',
-            date: getInitialDate(),
-            categoryId: undefined,
-            subCategoryId: undefined,
-            description: '',
-          }
-      )
+      if (initialData) {
+        reset({
+          amount: initialData.amount,
+          type: initialData.type,
+          date: dayjs(initialData.date).format('YYYY-MM-DD'),
+          categoryId: initialData.categoryId,
+          subCategoryId: initialData.subCategoryId ?? undefined,
+          description: initialData.description ?? '',
+        })
+      } else if (prefillData) {
+        reset({
+          amount: prefillData.amount ?? undefined,
+          type: prefillData.type ?? 'EXPENSE',
+          date: getInitialDate(),
+          categoryId: prefillData.categoryId ?? undefined,
+          subCategoryId: prefillData.subCategoryId ?? undefined,
+          description: prefillData.description ?? '',
+        })
+      } else {
+        reset({
+          amount: undefined,
+          type: 'EXPENSE',
+          date: getInitialDate(),
+          categoryId: undefined,
+          subCategoryId: undefined,
+          description: '',
+        })
+      }
       setSubCategories([])
     }
-  }, [open, initialData, reset])
+  }, [open, initialData, prefillData, reset])
 
   useEffect(() => {
     if (!selectedCategoryId) {
@@ -104,7 +116,18 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
       date: new Date(data.date).toISOString(),
       subCategoryId: data.subCategoryId ?? null,
     })
-    onClose()
+    if (addAnother) {
+      reset({
+        type: data.type,
+        amount: data.amount,
+        categoryId: data.categoryId,
+        subCategoryId: data.subCategoryId,
+        date: data.date,
+        description: '',
+      })
+    } else {
+      onClose()
+    }
   }
 
   return (
@@ -253,11 +276,20 @@ export function TransactionForm({ open, onClose, onSubmit, initialData }: Transa
           />
         </Stack>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={isSubmitting}>{t('forms.cancel')}</Button>
-        <Button onClick={handleSubmit(handleFormSubmit)} variant="contained" disabled={isSubmitting}>
-          {isSubmitting ? t('forms.saving') : initialData ? t('forms.update') : t('forms.add')}
-        </Button>
+      <DialogActions sx={{ display: 'flex', justifyContent: 'space-between', px: 3, pb: 2 }}>
+        {!initialData && (
+          <FormControlLabel
+            control={<Checkbox checked={addAnother} onChange={(e) => setAddAnother(e.target.checked)} size="small" />}
+            label={t('forms.addAnother')}
+            sx={{ ml: 0 }}
+          />
+        )}
+        <Box sx={{ display: 'flex', gap: 1, ml: 'auto' }}>
+          <Button onClick={onClose} disabled={isSubmitting}>{t('forms.cancel')}</Button>
+          <Button onClick={handleSubmit(handleFormSubmit)} variant="contained" disabled={isSubmitting}>
+            {isSubmitting ? t('forms.saving') : initialData ? t('forms.update') : t('forms.add')}
+          </Button>
+        </Box>
       </DialogActions>
     </Dialog>
   )

@@ -39,7 +39,8 @@
     "deleteTitle": "Delete Transaction",
     "deleteMessage": "Delete this {{type}} of {{amount}}?",
     "tooltipEdit": "Edit",
-    "tooltipDelete": "Delete"
+    "tooltipDelete": "Delete",
+    "tooltipClone": "Clone"
   },
   "categories": {
     "title": "Categories",
@@ -106,7 +107,8 @@
     "cancel": "Cancel",
     "saving": "Saving...",
     "update": "Update",
-    "add": "Add"
+    "add": "Add",
+    "addAnother": "Add another"
   },
   "ui": {
     "cancel": "Cancel",

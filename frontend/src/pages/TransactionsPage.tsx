@@ -8,10 +8,6 @@ import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import type { Dayjs } from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import { useTransactionStore } from '@/stores/transactionStore'
 import { useCategoryStore } from '@/stores/categoryStore'
@@ -32,9 +28,13 @@ export default function TransactionsPage() {
   const [editTarget, setEditTarget] = useState<Transaction | undefined>()
   const [deleteTarget, setDeleteTarget] = useState<Transaction | undefined>()
   const [cloneSource, setCloneSource] = useState<Partial<TransactionFormData> | undefined>()
-  const [startDate, setStartDate] = useState<Dayjs | null>(null)
-  const [endDate, setEndDate] = useState<Dayjs | null>(null)
+  const [filterYear, setFilterYear] = useState<number | null>(null)
+  const [filterMonth, setFilterMonth] = useState<number | null>(null)
   const { t } = useTranslation()
+
+  const currentYear = dayjs().year()
+  const FIRST_YEAR = 2024
+  const yearOptions = Array.from({ length: currentYear - FIRST_YEAR + 1 }, (_, i) => currentYear - i)
 
   useEffect(() => {
     fetchTransactions()
@@ -79,17 +79,17 @@ export default function TransactionsPage() {
     fetchTransactions({ page })
   }
 
-  const handleDateChange = (field: 'startDate' | 'endDate', val: Dayjs | null) => {
-    if (field === 'startDate') setStartDate(val)
-    else setEndDate(val)
-    const startIso = field === 'startDate'
-      ? (val ? val.startOf('day').toISOString() : undefined)
-      : (startDate ? startDate.startOf('day').toISOString() : undefined)
-    const endIso = field === 'endDate'
-      ? (val ? val.endOf('day').toISOString() : undefined)
-      : (endDate ? endDate.endOf('day').toISOString() : undefined)
-    setFilters({ startDate: startIso, endDate: endIso, page: 1 })
-    fetchTransactions({ startDate: startIso, endDate: endIso, page: 1 })
+  const applyDateFilter = (year: number | null, month: number | null) => {
+    if (!year && !month) {
+      setFilters({ startDate: undefined, endDate: undefined, page: 1 })
+      fetchTransactions({ startDate: undefined, endDate: undefined, page: 1 })
+      return
+    }
+    const y = year ?? currentYear
+    const start = month ? dayjs().year(y).month(month - 1).startOf('month') : dayjs().year(y).startOf('year')
+    const end = month ? dayjs().year(y).month(month - 1).endOf('month') : dayjs().year(y).endOf('year')
+    setFilters({ startDate: start.toISOString(), endDate: end.toISOString(), page: 1 })
+    fetchTransactions({ startDate: start.toISOString(), endDate: end.toISOString(), page: 1 })
   }
 
   const filteredSubCategories = filters.categoryId
@@ -105,8 +105,7 @@ export default function TransactionsPage() {
         </Button>
       </Box>
 
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Stack direction="row" spacing={2} sx={{ mb: 2, flexWrap: 'wrap' }}>
+      <Stack direction="row" spacing={2} sx={{ mb: 2, flexWrap: 'wrap' }}>
           <FormControl size="small" sx={{ minWidth: 140 }}>
             <InputLabel>{t('transactions.filterType')}</InputLabel>
             <Select
@@ -168,20 +167,44 @@ export default function TransactionsPage() {
             </FormControl>
           )}
 
-          <DatePicker
-            label={t('transactions.filterStartDate')}
-            value={startDate}
-            onChange={(val) => handleDateChange('startDate', val)}
-            slotProps={{ textField: { size: 'small' } }}
-          />
-          <DatePicker
-            label={t('transactions.filterEndDate')}
-            value={endDate}
-            onChange={(val) => handleDateChange('endDate', val)}
-            slotProps={{ textField: { size: 'small' } }}
-          />
+          <FormControl size="small" sx={{ minWidth: 110 }}>
+            <InputLabel>{t('transactions.filterYear')}</InputLabel>
+            <Select
+              label={t('transactions.filterYear')}
+              value={filterYear ?? 'ALL'}
+              onChange={(e) => {
+                const val = e.target.value
+                const year = val === 'ALL' ? null : Number(val)
+                setFilterYear(year)
+                applyDateFilter(year, filterMonth)
+              }}
+            >
+              <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
+              {yearOptions.map((y) => (
+                <MenuItem key={y} value={y}>{y}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl size="small" sx={{ minWidth: 140 }}>
+            <InputLabel>{t('transactions.filterMonth')}</InputLabel>
+            <Select
+              label={t('transactions.filterMonth')}
+              value={filterMonth ?? 'ALL'}
+              onChange={(e) => {
+                const val = e.target.value
+                const month = val === 'ALL' ? null : Number(val)
+                setFilterMonth(month)
+                applyDateFilter(filterYear, month)
+              }}
+            >
+              <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
+              {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+                <MenuItem key={m} value={m}>{t(`months.${m}`)}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Stack>
-      </LocalizationProvider>
 
       <Card>
         {isLoading ? (

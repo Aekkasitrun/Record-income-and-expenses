@@ -42,7 +42,8 @@
     "tooltipDelete": "ลบ",
     "tooltipClone": "คัดลอก",
     "filterYear": "ปี",
-    "filterMonth": "เดือน"
+    "filterMonth": "เดือน",
+    "clearFilters": "ล้างตัวกรอง"
   },
   "categories": {
     "title": "หมวดหมู่",

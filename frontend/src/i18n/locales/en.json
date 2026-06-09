@@ -42,7 +42,8 @@
     "tooltipDelete": "Delete",
     "tooltipClone": "Clone",
     "filterYear": "Year",
-    "filterMonth": "Month"
+    "filterMonth": "Month",
+    "clearFilters": "Clear filters"
   },
   "categories": {
     "title": "Categories",

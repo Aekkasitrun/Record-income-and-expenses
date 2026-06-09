@@ -53,7 +53,7 @@
 - [x] Reports page: monthly breakdown (income/expense/investment by month)
 - [x] Reports page: yearly summary (12-month chart data)
 - [x] Reports page: by-category breakdown with sub-category nesting
-- [x] Date range filter on TransactionsPage (startDate / endDate)
+- [x] Date filter on TransactionsPage (year/month selects; replaced date range pickers)
 
 ### Definition of Done for Phase 2
 - All Phase 1 criteria met

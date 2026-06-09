@@ -13,6 +13,14 @@
 > Work completed but not yet in a versioned release.
 
 ### Added
+- **Clone transaction** — copy icon on each table row pre-fills a new form with the same type/category/amount for fast retroactive batch entry
+- **"Add another" mode** — checkbox in TransactionForm keeps the form open after submit (retains all fields, clears only description) for entering consecutive similar transactions
+- **Filter persistence** — transaction filter state (type, category, year, month) saved to localStorage (`txFilters`) and restored on page load; "Clear filters" button resets all filters at once
+
+### Changed
+- **Transaction date filter** — replaced Start/End date pickers with Year and Month dropdowns for one-click date filtering
+
+### Added
 - **Favourite categories** — star toggle on categories; favourites sorted to top of all category selectors
 - **INVESTMENT transaction type** — third transaction type alongside INCOME and EXPENSE; tracked separately in summary and reports
 - **Date range filter** on Transactions page (startDate / endDate)

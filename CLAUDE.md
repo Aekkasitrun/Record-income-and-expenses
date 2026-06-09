@@ -162,7 +162,7 @@ User Request
 
 | Module | Location | Description |
 |--------|----------|-------------|
-| **Transactions** | `backend/src/modules/transactions/` | CRUD, summary, filters (type, category, sub-category, date range), pagination |
+| **Transactions** | `backend/src/modules/transactions/` | CRUD, summary, filters (type, category, sub-category, year/month), pagination; filter state persisted to localStorage (`txFilters`) |
 | **Categories** | `backend/src/modules/categories/` | CRUD, type filter, `isFavourite` toggle, guarded delete |
 | **Sub-categories** | `backend/src/modules/sub-categories/` | CRUD, `categoryId` filter, guarded delete |
 | **Reports** | `backend/src/modules/reports/` | monthly, yearly, by-category aggregation with sub-category breakdown |

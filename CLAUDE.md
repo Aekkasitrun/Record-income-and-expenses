@@ -8,6 +8,39 @@ Single-user, no authentication. Thai Baht (THB) currency.
 
 ---
 
+## IMPORTANT: Session Start Protocol
+
+**At the start of EVERY conversation in this project, read these files before doing anything else:**
+
+```
+ARCHITECTURE.md   ← system design, ER diagram, API routes, env vars
+CONVENTIONS.md    ← naming rules, commit format, import order, patterns
+ROADMAP.md        ← current phase, pending tasks, completion status
+```
+
+Do not skip this step even if you remember the project from a previous session. These files may have changed.
+
+---
+
+## Documentation Auto-Update Rules
+
+After completing any significant work, **proactively update the relevant files without waiting to be asked.** Apply these rules after every change that is confirmed working:
+
+| Change Made | Files to Update |
+|------------|----------------|
+| New feature implemented | `ROADMAP.md` (mark task done) + `CLAUDE.md` (Feature Modules if new module) |
+| New database table or column | `ARCHITECTURE.md` (ER diagram + table list) |
+| New API endpoint added | `ARCHITECTURE.md` (API routes table) |
+| New environment variable | `ARCHITECTURE.md` (env vars table) + `.env.example` |
+| New naming rule established | `CONVENTIONS.md` |
+| New code pattern or architecture decision | `CLAUDE.md` (Code Standards section) |
+| Phase completed | `ROADMAP.md` (progress table + actual date) |
+| New module added | `CLAUDE.md` (Feature Modules) + `ARCHITECTURE.md` (Component Diagram) |
+
+Update these files in the **same response** as the change — do not defer to a later turn.
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -29,22 +62,25 @@ Single-user, no authentication. Thai Baht (THB) currency.
 
 ```
 Record-income-and-expenses/
-├── CLAUDE.md                    ← This file
+├── CLAUDE.md                    ← This file (AI workflow guide)
+├── ARCHITECTURE.md              ← System design, ER diagram, API routes
+├── CONVENTIONS.md               ← Naming rules, patterns, commit format
+├── ROADMAP.md                   ← Feature phases and completion status
 ├── docker-compose.yml           ← Production
 ├── docker-compose.dev.yml       ← Development (hot reload)
 ├── .env.example
 ├── frontend/                    ← React SPA
 │   ├── src/
-│   │   ├── components/layout/   ← AppLayout, Sidebar
+│   │   ├── components/layout/   ← AppLayout
 │   │   ├── components/ui/       ← StatCard, AmountChip, CategoryBadge, ConfirmDialog, LanguageToggle, ThemeModeToggle
-│   │   ├── components/forms/    ← TransactionForm, CategoryForm
+│   │   ├── components/forms/    ← TransactionForm, CategoryForm, SubCategoryForm
 │   │   ├── pages/               ← Dashboard, Transactions, Categories, Reports
-│   │   ├── stores/              ← Zustand: transactionStore, categoryStore, uiStore
-│   │   ├── services/            ← axios: api.ts, transactionService, categoryService, reportService
+│   │   ├── stores/              ← Zustand: transactionStore, categoryStore, subCategoryStore, uiStore
+│   │   ├── services/            ← axios: api.ts, transactionService, categoryService, subCategoryService, reportService
 │   │   ├── types/               ← TypeScript: transaction.ts, category.ts, report.ts
-│   │   ├── schemas/             ← Zod: transactionSchema, categorySchema
+│   │   ├── schemas/             ← Zod: transactionSchema, categorySchema, subCategorySchema
 │   │   ├── i18n/                ← react-i18next config + locales/en.json, locales/th.json
-│   │   ├── utils/locale.ts      ← formatCurrency, formatCurrencyCompact (locale-aware)
+│   │   ├── utils/               ← locale.ts (formatCurrency), iconMap.tsx
 │   │   └── theme/theme.ts       ← MUI v7 custom theme (createAppTheme(mode))
 │   └── Dockerfile
 └── backend/                     ← NestJS API
@@ -53,10 +89,11 @@ Record-income-and-expenses/
     │   ├── modules/
     │   │   ├── transactions/    ← CRUD + summary endpoint
     │   │   ├── categories/      ← CRUD (guard: cannot delete if transactions exist)
+    │   │   ├── sub-categories/  ← CRUD (guard: cannot delete if transactions exist)
     │   │   └── reports/         ← monthly, yearly, by-category
     │   └── common/filters/      ← HttpExceptionFilter
     ├── prisma/
-    │   ├── schema.prisma        ← Category + Transaction models
+    │   ├── schema.prisma        ← Category, SubCategory, Transaction models + TransactionType enum
     │   └── seed.ts              ← 12 default categories
     └── Dockerfile
 ```
@@ -92,7 +129,7 @@ User Request
        │                           Backend: test/ folder, Supertest integration tests
        │                           Frontend: *.test.tsx alongside components
        │
-       └──► Agent 5: Reporter   → No skill needed
+       └──► Agent 5: Reporter   → invoke /git-commit-helper skill
                                    Output: change summary + git commit message
 ```
 
@@ -104,10 +141,21 @@ User Request
 | New component, store, API integration | Frontend | `/senior-frontend` |
 | New endpoint, DTO, Prisma schema change | Backend | `/senior-backend` |
 | After any feature completion | Tester | (none) |
-| After any code change | Reporter | (none) |
+| After any code change | Reporter | `/git-commit-helper` |
 | Architecture decision, new feature planning | Architect | `/senior-architect` |
 | Pull request review | Reviewer | `/code-reviewer` |
 | Performance audit | Perf | `/react-best-practices` |
+
+---
+
+## Feature Modules
+
+| Module | Location | Description |
+|--------|----------|-------------|
+| **Transactions** | `backend/src/modules/transactions/` | CRUD, summary, filters (type, category, sub-category, date range), pagination |
+| **Categories** | `backend/src/modules/categories/` | CRUD, type filter, `isFavourite` toggle, guarded delete |
+| **Sub-categories** | `backend/src/modules/sub-categories/` | CRUD, `categoryId` filter, guarded delete |
+| **Reports** | `backend/src/modules/reports/` | monthly, yearly, by-category aggregation with sub-category breakdown |
 
 ---
 
@@ -335,3 +383,22 @@ cd backend && npx tsc --noEmit
 | GET | `/api/reports/by-category` | `?type=EXPENSE&startDate=&endDate=` |
 
 Swagger UI: http://localhost:4000/api/docs
+
+---
+
+## Brand Colors (use ONLY these)
+
+```typescript
+export const brandColors = {
+  navy:     '#003C71',  // Light mode primary
+  blue:     '#009CDE',  // Dark mode primary
+  royal:    '#315DAE',
+  teal:     '#0085AD',
+  sky:      '#59CBE8',
+  lavender: '#B6B8DC',
+  white:    '#FFFFFF',
+}
+```
+
+Dark theme backgrounds: `#0a1929` (default), `#132f4c` (paper).
+Always use MUI semantic tokens (`background.default`, `text.primary`) — never hardcode hex colors that only work in one mode.

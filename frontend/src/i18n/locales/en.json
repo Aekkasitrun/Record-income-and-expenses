@@ -43,7 +43,12 @@
     "tooltipClone": "Clone",
     "filterYear": "Year",
     "filterMonth": "Month",
-    "clearFilters": "Clear filters"
+    "clearFilters": "Clear filters",
+    "filterSortBy": "Sort by",
+    "sortByDate": "Transaction Date",
+    "sortByCreatedAt": "Entry Date",
+    "sortAsc": "Oldest first",
+    "sortDesc": "Newest first"
   },
   "categories": {
     "title": "Categories",

@@ -10,7 +10,7 @@ export class TransactionsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(query: QueryTransactionDto) {
-    const { type, categoryId, subCategoryId, startDate, endDate, page = 1, limit = 20 } = query;
+    const { type, categoryId, subCategoryId, startDate, endDate, page = 1, limit = 20, sortBy = 'date', order = 'desc' } = query;
 
     const where: Prisma.TransactionWhereInput = {
       ...(type && { type }),
@@ -30,7 +30,7 @@ export class TransactionsService {
       this.prisma.transaction.findMany({
         where,
         include: { category: true, subCategory: true },
-        orderBy: { date: 'desc' },
+        orderBy: { [sortBy]: order },
         skip: (page - 1) * limit,
         take: limit,
       }),

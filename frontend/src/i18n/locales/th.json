@@ -43,7 +43,12 @@
     "tooltipClone": "คัดลอก",
     "filterYear": "ปี",
     "filterMonth": "เดือน",
-    "clearFilters": "ล้างตัวกรอง"
+    "clearFilters": "ล้างตัวกรอง",
+    "filterSortBy": "เรียงตาม",
+    "sortByDate": "วันที่รายการ",
+    "sortByCreatedAt": "วันที่บันทึก",
+    "sortAsc": "เก่าสุดก่อน",
+    "sortDesc": "ใหม่สุดก่อน"
   },
   "categories": {
     "title": "หมวดหมู่",

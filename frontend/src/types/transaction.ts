@@ -37,6 +37,8 @@ export interface TransactionFilters {
   endDate?: string
   page?: number
   limit?: number
+  sortBy?: 'date' | 'createdAt'
+  order?: 'asc' | 'desc'
 }
 
 export interface CreateTransactionPayload {

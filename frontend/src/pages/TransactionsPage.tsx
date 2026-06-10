@@ -9,6 +9,8 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff'
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import { useTranslation } from 'react-i18next'
 import { useTransactionStore } from '@/stores/transactionStore'
 import { useCategoryStore } from '@/stores/categoryStore'
@@ -29,6 +31,8 @@ interface SavedFilters {
   subCategoryId?: number
   filterYear: number | null
   filterMonth: number | null
+  sortBy?: 'date' | 'createdAt'
+  order?: 'asc' | 'desc'
 }
 
 function buildDateFilters(year: number | null, month: number | null) {
@@ -53,6 +57,8 @@ export default function TransactionsPage() {
   const [cloneSource, setCloneSource] = useState<Partial<TransactionFormData> | undefined>()
   const [filterYear, setFilterYear] = useState<number | null>(null)
   const [filterMonth, setFilterMonth] = useState<number | null>(null)
+  const [sortBy, setSortBy] = useState<'date' | 'createdAt'>('date')
+  const [order, setOrder] = useState<'asc' | 'desc'>('desc')
   const { t } = useTranslation()
 
   const currentYear = dayjs().year()
@@ -66,13 +72,19 @@ export default function TransactionsPage() {
         const parsed: SavedFilters = JSON.parse(saved)
         const year = parsed.filterYear ?? null
         const month = parsed.filterMonth ?? null
+        const sb = parsed.sortBy ?? 'date'
+        const od = parsed.order ?? 'desc'
         setFilterYear(year)
         setFilterMonth(month)
+        setSortBy(sb)
+        setOrder(od)
         const restored = {
           type: parsed.type,
           categoryId: parsed.categoryId,
           subCategoryId: parsed.subCategoryId,
           ...buildDateFilters(year, month),
+          sortBy: sb,
+          order: od,
           page: 1,
         }
         setFilters(restored)
@@ -133,12 +145,14 @@ export default function TransactionsPage() {
   const handleClearFilters = () => {
     setFilterYear(null)
     setFilterMonth(null)
-    setFilters({ type: undefined, categoryId: undefined, subCategoryId: undefined, startDate: undefined, endDate: undefined, page: 1 })
-    fetchTransactions({ type: undefined, categoryId: undefined, subCategoryId: undefined, startDate: undefined, endDate: undefined, page: 1 })
+    setSortBy('date')
+    setOrder('desc')
+    setFilters({ type: undefined, categoryId: undefined, subCategoryId: undefined, startDate: undefined, endDate: undefined, sortBy: undefined, order: undefined, page: 1 })
+    fetchTransactions({ type: undefined, categoryId: undefined, subCategoryId: undefined, startDate: undefined, endDate: undefined, sortBy: undefined, order: undefined, page: 1 })
     localStorage.removeItem(FILTERS_KEY)
   }
 
-  const hasActiveFilters = !!(filters.type || filters.categoryId || filters.subCategoryId || filterYear || filterMonth)
+  const hasActiveFilters = !!(filters.type || filters.categoryId || filters.subCategoryId || filterYear || filterMonth || sortBy !== 'date' || order !== 'desc')
 
   const filteredSubCategories = filters.categoryId
     ? subCategories.filter((s) => s.categoryId === filters.categoryId)
@@ -154,6 +168,46 @@ export default function TransactionsPage() {
       </Box>
 
       <Stack direction="row" spacing={2} sx={{ mb: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+        <FormControl size="small" sx={{ minWidth: 110 }}>
+          <InputLabel>{t('transactions.filterYear')}</InputLabel>
+          <Select
+            label={t('transactions.filterYear')}
+            value={filterYear ?? 'ALL'}
+            onChange={(e) => {
+              const val = e.target.value
+              const year = val === 'ALL' ? null : Number(val)
+              setFilterYear(year)
+              applyDateFilter(year, filterMonth)
+              saveFiltersToStorage({ type: filters.type, categoryId: filters.categoryId, subCategoryId: filters.subCategoryId, filterYear: year, filterMonth, sortBy, order })
+            }}
+          >
+            <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
+            {yearOptions.map((y) => (
+              <MenuItem key={y} value={y}>{y}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <FormControl size="small" sx={{ minWidth: 140 }}>
+          <InputLabel>{t('transactions.filterMonth')}</InputLabel>
+          <Select
+            label={t('transactions.filterMonth')}
+            value={filterMonth ?? 'ALL'}
+            onChange={(e) => {
+              const val = e.target.value
+              const month = val === 'ALL' ? null : Number(val)
+              setFilterMonth(month)
+              applyDateFilter(filterYear, month)
+              saveFiltersToStorage({ type: filters.type, categoryId: filters.categoryId, subCategoryId: filters.subCategoryId, filterYear, filterMonth: month, sortBy, order })
+            }}
+          >
+            <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
+            {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+              <MenuItem key={m} value={m}>{t(`months.${m}`)}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         <FormControl size="small" sx={{ minWidth: 140 }}>
           <InputLabel>{t('transactions.filterType')}</InputLabel>
           <Select
@@ -164,7 +218,7 @@ export default function TransactionsPage() {
               const type = val === 'ALL' ? undefined : val
               setFilters({ type, page: 1, categoryId: undefined, subCategoryId: undefined })
               fetchTransactions({ type, page: 1, categoryId: undefined, subCategoryId: undefined })
-              saveFiltersToStorage({ type, categoryId: undefined, subCategoryId: undefined, filterYear, filterMonth })
+              saveFiltersToStorage({ type, categoryId: undefined, subCategoryId: undefined, filterYear, filterMonth, sortBy, order })
             }}
           >
             <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
@@ -184,7 +238,7 @@ export default function TransactionsPage() {
               const categoryId = val === 'ALL' ? undefined : Number(val)
               setFilters({ categoryId, page: 1, subCategoryId: undefined })
               fetchTransactions({ categoryId, page: 1, subCategoryId: undefined })
-              saveFiltersToStorage({ type: filters.type, categoryId, subCategoryId: undefined, filterYear, filterMonth })
+              saveFiltersToStorage({ type: filters.type, categoryId, subCategoryId: undefined, filterYear, filterMonth, sortBy, order })
             }}
           >
             <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
@@ -207,7 +261,7 @@ export default function TransactionsPage() {
                 const subCategoryId = val === 'ALL' ? undefined : Number(val)
                 setFilters({ subCategoryId, page: 1 })
                 fetchTransactions({ subCategoryId, page: 1 })
-                saveFiltersToStorage({ type: filters.type, categoryId: filters.categoryId, subCategoryId, filterYear, filterMonth })
+                saveFiltersToStorage({ type: filters.type, categoryId: filters.categoryId, subCategoryId, filterYear, filterMonth, sortBy, order })
               }}
             >
               <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
@@ -218,45 +272,38 @@ export default function TransactionsPage() {
           </FormControl>
         )}
 
-        <FormControl size="small" sx={{ minWidth: 110 }}>
-          <InputLabel>{t('transactions.filterYear')}</InputLabel>
+        <FormControl size="small" sx={{ minWidth: 160 }}>
+          <InputLabel>{t('transactions.filterSortBy')}</InputLabel>
           <Select
-            label={t('transactions.filterYear')}
-            value={filterYear ?? 'ALL'}
+            label={t('transactions.filterSortBy')}
+            value={sortBy}
             onChange={(e) => {
-              const val = e.target.value
-              const year = val === 'ALL' ? null : Number(val)
-              setFilterYear(year)
-              applyDateFilter(year, filterMonth)
-              saveFiltersToStorage({ type: filters.type, categoryId: filters.categoryId, subCategoryId: filters.subCategoryId, filterYear: year, filterMonth })
+              const val = e.target.value as 'date' | 'createdAt'
+              setSortBy(val)
+              setFilters({ sortBy: val, page: 1 })
+              fetchTransactions({ sortBy: val, page: 1 })
+              saveFiltersToStorage({ type: filters.type, categoryId: filters.categoryId, subCategoryId: filters.subCategoryId, filterYear, filterMonth, sortBy: val, order })
             }}
           >
-            <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
-            {yearOptions.map((y) => (
-              <MenuItem key={y} value={y}>{y}</MenuItem>
-            ))}
+            <MenuItem value="date">{t('transactions.sortByDate')}</MenuItem>
+            <MenuItem value="createdAt">{t('transactions.sortByCreatedAt')}</MenuItem>
           </Select>
         </FormControl>
 
-        <FormControl size="small" sx={{ minWidth: 140 }}>
-          <InputLabel>{t('transactions.filterMonth')}</InputLabel>
-          <Select
-            label={t('transactions.filterMonth')}
-            value={filterMonth ?? 'ALL'}
-            onChange={(e) => {
-              const val = e.target.value
-              const month = val === 'ALL' ? null : Number(val)
-              setFilterMonth(month)
-              applyDateFilter(filterYear, month)
-              saveFiltersToStorage({ type: filters.type, categoryId: filters.categoryId, subCategoryId: filters.subCategoryId, filterYear, filterMonth: month })
+        <Tooltip title={order === 'desc' ? t('transactions.sortDesc') : t('transactions.sortAsc')}>
+          <IconButton
+            size="small"
+            onClick={() => {
+              const newOrder = order === 'desc' ? 'asc' : 'desc'
+              setOrder(newOrder)
+              setFilters({ order: newOrder, page: 1 })
+              fetchTransactions({ order: newOrder, page: 1 })
+              saveFiltersToStorage({ type: filters.type, categoryId: filters.categoryId, subCategoryId: filters.subCategoryId, filterYear, filterMonth, sortBy, order: newOrder })
             }}
           >
-            <MenuItem value="ALL">{t('transactions.all')}</MenuItem>
-            {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
-              <MenuItem key={m} value={m}>{t(`months.${m}`)}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+            {order === 'desc' ? <ArrowDownwardIcon fontSize="small" /> : <ArrowUpwardIcon fontSize="small" />}
+          </IconButton>
+        </Tooltip>
 
         {hasActiveFilters && (
           <Button

@@ -1,4 +1,4 @@
-import { IsEnum, IsISO8601, IsInt, IsOptional, Min, Max } from 'class-validator';
+import { IsEnum, IsISO8601, IsInt, IsIn, IsOptional, Min, Max } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { TransactionType } from '@prisma/client';
@@ -43,4 +43,14 @@ export class QueryTransactionDto {
   @Min(1)
   @Max(100)
   limit?: number = 20;
+
+  @ApiPropertyOptional({ enum: ['date', 'createdAt'], default: 'date' })
+  @IsOptional()
+  @IsIn(['date', 'createdAt'])
+  sortBy?: 'date' | 'createdAt';
+
+  @ApiPropertyOptional({ enum: ['asc', 'desc'], default: 'desc' })
+  @IsOptional()
+  @IsIn(['asc', 'desc'])
+  order?: 'asc' | 'desc';
 }
